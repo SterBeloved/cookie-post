@@ -420,7 +420,7 @@
     }
     if(poemLines.length){
       x.font='42px "Cookie Post WenKai GB", "Songti SC", serif';
-      poemLines.forEach((v,i)=>x.fillText(v.slice(0,22),600,1080+i*70,760));
+      poemLines.forEach((v,i)=>x.fillText(v.slice(0,22),600,1040+i*70,760));
     }
     x.font='32px "Cookie Post WenKai GB", "Songti SC", Georgia, serif';
     const text=journey.message||'';
