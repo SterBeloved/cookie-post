@@ -400,7 +400,7 @@
     x.textAlign='center';x.fillStyle=hasPhoto?'#3d302c':'#553b35';
     // V2.13.2: narrow, translucent white mist behind lettering (not the cookie).
     {
-      const textPanelTop=poemLines.length?970:1040;
+      const textPanelTop=poemLines.length?970:1000;
       const textPanelHeight=poemLines.length?650:580;
       x.save();
       x.shadowColor='rgba(255,255,255,.38)';
