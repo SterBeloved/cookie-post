@@ -341,6 +341,28 @@
   }
   function wrapColors(){return {mint:['#bfe4d4','#fffaf1'],pink:['#edb8c3','#fff5f8'],blue:['#bdd3e9','#f4f8ff'],lavender:['#d1c3e9','#faf5ff']}[journey.paper]||['#bfe4d4','#fffaf1']}
   async function exportCookie(){try{const c=await rasterCookie();await downloadCanvas(c,'cookie-post-sticker.png');}catch(e){toast('PNG export failed: '+e.message)}}
+  // Postcard border PNG scale. Saved alongside the user's existing card settings.
+  const getBorderSize=()=>Math.max(70,Math.min(130,Number(journey.borderSize)||100));
+  function updateBorderSize(){
+    const amount=getBorderSize();
+    const slider=$('postcard-border-size');
+    const output=$('postcard-border-size-value');
+    if(slider){slider.value=String(amount);slider.disabled=journey.border==='none';}
+    if(output)output.textContent=amount+'%';
+    const paper=$('package-paper');
+    if(paper)paper.style.setProperty('--postcard-border-scale',amount+'%');
+  }
+  const sizeSlider=$('postcard-border-size');
+  if(sizeSlider)sizeSlider.addEventListener('input',event=>{
+    journey.borderSize=Number(event.target.value);
+    updateBorderSize();keep();
+    if(state.page==='send')renderSendPage();
+  });
+  const resetBorder=$('postcard-border-size-reset');
+  if(resetBorder)resetBorder.addEventListener('click',()=>{
+    journey.borderSize=100;updateBorderSize();keep();
+    if(state.page==='send')renderSendPage();
+  });
   const borderDesigns=[['2646','Vintage Flourish'],['2647','Blue Filigree'],['2648','Classic Double Line'],['2649','Blue Botanical'],['2650','Art Nouveau Lace'],['2651','Golden Baroque'],['2652','Emerald Floral'],['2653','Golden Corners'],['2654','Ornate Lace'],['2655','Victorian Gold']];
   const borderImageCache=new Map();
   function getFrameImage(id){
@@ -369,6 +391,7 @@
     document.querySelectorAll('.postcard-border-choice').forEach(b=>b.classList.toggle('selected',b.dataset.border===id));
     // Keep a small live border preview next to the actual cookie in Package.
     const paper=$('package-paper');if(paper)paper.style.setProperty('--postcard-border-url',id==='none'?'none':`url("assets/postcard-frames/frame-${id}.png")`);
+    updateBorderSize();
     if(state.page==='send')renderSendPage();
   }
   if($('postcard-border-select'))$('postcard-border-select').addEventListener('change',e=>setBorder(e.target.value));
@@ -387,7 +410,9 @@
     x.drawImage(cookie,290,220,620,620);
     if(frame){
       x.save();x.shadowColor='rgba(78,49,32,.26)';x.shadowBlur=2;x.shadowOffsetX=1;x.shadowOffsetY=2;
-      x.drawImage(frame,100,90,1000,1500);x.restore();
+      const scale=getBorderSize()/100;
+      const w=1000*scale,h=1500*scale;
+      x.drawImage(frame,600-w/2,840-h/2,w,h);x.restore();
     }
     if(document.fonts){
       try{await Promise.all([
@@ -434,6 +459,7 @@
     x.font='500 26px "Cookie Post WenKai GB", "Songti SC", Georgia, serif';
     if(journey.to)x.fillText('To '+journey.to.slice(0,50),600,1360,800);
     if(journey.from)x.fillText('From '+journey.from.slice(0,50),600,1410,800);
+    return c;
   }
   window.CookiePostCreateCardCanvas=createCardCanvas;
   async function exportCard(){try{await downloadCanvas(await createCardCanvas(),'cookie-post-greeting-card.png')}catch(e){toast('Card export failed: '+e.message)}}

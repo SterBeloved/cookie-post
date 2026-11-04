@@ -571,3 +571,11 @@
 .photo-background-actions{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:7px}
 #postcard-photo-status{font-size:12px;line-height:1.4;color:#80695c;flex:1 1 190px}
 #postcard-photo-remove{padding:5px 10px;font-size:12px}
+
+/* V2.15: adjustable PNG postcard border size only. */
+.postcard-border-size-control{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px;padding:8px 10px;background:#f1f8f1;border:1px dashed #bad7cb;border-radius:11px}
+.postcard-border-size-control label{font-size:13px;color:#78574d;display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.postcard-border-size-control output{font-variant-numeric:tabular-nums;font-weight:700;min-width:39px}
+.postcard-border-size-control input[type=range]{flex:1 1 135px;min-width:90px;accent-color:#77ad9b}
+.postcard-border-size-control button{font-size:12px;padding:5px 10px}
+.package-paper::after{background-position:center;background-size:var(--postcard-border-scale,100%) var(--postcard-border-scale,100%)}
