@@ -208,13 +208,28 @@ show('home');
     scale:100, rotation:0, x:180, y:180, applied:false
   }, state.pattern||{});
 
+  // Do not store the original uploaded photo in localStorage: it may be several MB.
+  // Persist only the small processed contour and its placement settings.
+  function compactPattern(){
+    const {sourceData, ...result}=patternState;
+    return result;
+  }
   function persistExtras(){
-    localStorage.setItem(extraKey, JSON.stringify({
+    const payload={
       decorateTool: state.decorateTool,
       pendingSet: state.pendingSet,
-      pattern: patternState.processedData?{...patternState}:null
-    }));
+      pattern: patternState.processedData?compactPattern():null
+    };
+    try{
+      localStorage.setItem(extraKey,JSON.stringify(payload));
+      return true;
+    }catch(error){
+      console.warn('[Cookie Post] Pattern not saved locally:',error);
+      return false;
+    }
   }
+  // Shared by Decorate, Bake, Package, Send and the final PNG renderer.
+  window.CookiePostPattern={get:()=>compactPattern()};
 
   function renderSets(){
     const box=$('sets'); if(!box) return;
@@ -420,7 +435,7 @@ show('home');
   $('pattern-mode').addEventListener('change', e=>{ patternState.mode=e.target.value; renderPattern(); persistExtras(); });
   $('pattern-center').addEventListener('click',()=>{ patternState.x=180; patternState.y=180; patternState.rotation=0; patternState.applied=false; renderPattern(); persistExtras(); });
   $('pattern-clear').addEventListener('click',()=>{ patternState.sourceData=null; patternState.processedData=null; patternState.applied=false; renderPattern(); persistExtras(); toast('Pattern cleared.'); });
-  $('pattern-apply').addEventListener('click',()=>{ if(!patternState.processedData){ toast('Upload an image first.'); return; } patternState.applied=true; state.pattern={...patternState}; persistExtras(); renderPattern(); toast('Pattern applied!'); });
+  $('pattern-apply').addEventListener('click',()=>{ if(!patternState.processedData){ toast('Upload an image first.'); return; } patternState.applied=true; state.pattern=compactPattern(); const saved=persistExtras(); renderPattern(); toast(saved?'Pattern applied!':'Pattern applied for this session. Browser storage is full.'); });
 
   const stampCanvas=$('stamp-canvas');
   stampCanvas.addEventListener('click', e=>{

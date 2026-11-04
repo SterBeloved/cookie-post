@@ -230,9 +230,10 @@
   });
 
   // Use the same complete SVG cookie in the wrapping view and exported raster assets.
-  function snapshotSVG(){
+  function snapshotSVG(skipPattern=false){
     rebuildStamp();const svg=$('stamp-canvas').cloneNode(true);
     svg.removeAttribute('tabindex');svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    if(skipPattern)svg.querySelector('#pattern-imprint')?.remove(); // Render lines separately on Canvas to avoid Safari nested-SVG issues.
     const plate=svg.querySelector('circle');if(plate)plate.remove();
     if(journey.baked && journey.bakeLevel>0){
       const body=svg.querySelector('#stamp-cookie-base > g > path:last-child');
@@ -272,7 +273,7 @@
     const c=document.createElement('canvas');c.width=c.height=720;
     const x=c.getContext('2d');
     try{
-      const img=await imageFromSVG(snapshotSVG());
+      const img=await imageFromSVG(snapshotSVG(true));
       x.drawImage(img,0,0,720,720);
       // Drawing a nested SVG image can succeed but taint Safari's Canvas.
       // Probe before icing/export, and rebuild a clean canvas if necessary.
@@ -287,6 +288,26 @@
       await drawFallbackCookie(c.getContext('2d'));
     }
     if(journey.baked&&journey.bakeLevel){x.save();x.globalCompositeOperation='source-atop';x.fillStyle=`rgba(166,93,31,${journey.bakeLevel/1600})`;x.fillRect(0,0,720,720);x.restore();}
+    // Image-to-Pattern uses an image data URI. Composite it on an origin-clean
+    // Canvas so Safari can export the final postcard, even if SVG fallback ran.
+    const pattern=window.CookiePostPattern?.get?.();
+    if(pattern?.applied&&pattern.processedData){
+      try{
+        const lines=new Image();lines.src=pattern.processedData;await lines.decode();
+        const scale=(Number(pattern.scale)||100)/100;
+        const w=180*scale,h=180*scale;
+        const px=Number(pattern.x)||180,py=Number(pattern.y)||180;
+        x.save();x.scale(2,2);
+        x.translate(px,py);x.rotate((Number(pattern.rotation)||0)*Math.PI/180);
+        if(pattern.mode==='emboss'){
+          x.globalAlpha=.23;x.drawImage(lines,-w/2-1.2,-h/2-1.2,w,h);
+          x.globalAlpha=.45;x.drawImage(lines,-w/2+1.1,-h/2+1.5,w,h);
+        }else{
+          x.globalAlpha=.85;x.drawImage(lines,-w/2,-h/2,w,h);
+        }
+        x.restore();
+      }catch(error){console.warn('[Cookie Post] Pattern could not be composited:',error);}
+    }
     const imgIcing=new Image();imgIcing.src=icing.toDataURL('image/png');
     try{await imgIcing.decode();x.drawImage(imgIcing,0,0,720,720)}
     catch(err){console.warn('[Cookie Post] Icing image could not be decoded:',err)}
@@ -411,7 +432,8 @@
     if(frame){
       x.save();x.shadowColor='rgba(78,49,32,.26)';x.shadowBlur=2;x.shadowOffsetX=1;x.shadowOffsetY=2;
       const scale=getBorderSize()/100;
-      const w=1000*scale,h=1500*scale;
+      // Match Package CSS border overlay, which is sized to the full 5:7 card.
+      const w=1200*scale,h=1680*scale;
       x.drawImage(frame,600-w/2,840-h/2,w,h);x.restore();
     }
     if(document.fonts){
