@@ -311,7 +311,9 @@ show('home');
       grey[i]=255*(1-alpha)+alpha*(data[j]*0.299+data[j+1]*0.587+data[j+2]*0.114);
     }
     const mask=new Uint8Array(size*size);
-    const minMag=55+simplify*2.15+(Number(patternState.threshold)-140)*0.35;
+    // V2.16.1: the previous threshold (~223 by default) eliminated many
+    // normal photographs and hand-drawn icons before they reached the stamp.
+    const minMag=Math.max(45,65+simplify*0.85+(Number(patternState.threshold)-140)*0.45);
     const at=(x,y)=>grey[y*size+x];
     for(let y=2;y<size-2;y++) for(let x=2;x<size-2;x++){
       const gx=-at(x-1,y-1)-2*at(x-1,y)-at(x-1,y+1)+at(x+1,y-1)+2*at(x+1,y)+at(x+1,y+1);
@@ -342,7 +344,7 @@ show('home');
     for(let i=0;i<mask.length;i++) if(erase[i])mask[i]=0;
     // Connected-component filtering suppresses isolated text, QR noise and tiny detail.
     const seen=new Uint8Array(mask.length), components=[];
-    const minArea=Math.max(10,Math.round(8+simplify*.48));
+    const minArea=Math.max(9,Math.round(8+simplify*.19));
     for(let i=0;i<mask.length;i++){
       if(!mask[i]||seen[i])continue;
       const queue=[i], pixels=[];seen[i]=1;
@@ -367,9 +369,16 @@ show('home');
     for(const c of retained)for(const p of c.pixels)clean[p]=1;
     const total=retained.reduce((n,c)=>n+c.pixels.length,0);
     if(total<20){
-      patternState.processedData=null;
-      $('pattern-info').textContent='No clear motif found. Try a closer crop, less simplification, or a high-contrast drawing rather than a photograph.';
-      buildPatternPreview();persistExtras();return;
+      // For simple dark line art whose softened edges fail component filtering,
+      // use the dark ink itself as a final monochrome stamp source. Avoid edges.
+      for(let y=10;y<size-10;y++)for(let x=10;x<size-10;x++){
+        if(grey[y*size+x]<155)clean[y*size+x]=1;
+      }
+      if(!clean.some(Boolean)){
+        patternState.processedData=null;
+        $('pattern-info').textContent='No clear motif found. Try a closer crop or a high-contrast drawing.';
+        buildPatternPreview();persistExtras();return;
+      }
     }
     const result=document.createElement('canvas');result.width=result.height=outputSize;
     const rc=result.getContext('2d');
@@ -403,7 +412,13 @@ show('home');
     </g>`;
   }
 
-  function renderPatternOverlay(){ $('pattern-imprint').innerHTML = patternState.processedData ? `<g clip-path="url(#stampClip)">${patternGraphic()}</g>` : ''; }
+  function renderPatternOverlay(){
+    const target=$('pattern-imprint');
+    if(target)target.innerHTML = patternState.processedData ? `<g clip-path="url(#stampClip)">${patternGraphic()}</g>` : '';
+  }
+  // shape-layout.js replaces renderStamp after this script has loaded. Let that
+  // final renderer restore the image-to-pattern layer after repainting the cookie.
+  window.CookiePostRefreshPatternOverlay=renderPatternOverlay;
 
   const originalRenderStamp=renderStamp;
   renderStamp=function(){ originalRenderStamp(); renderPatternOverlay(); }
@@ -433,7 +448,7 @@ show('home');
   $('pattern-scale').addEventListener('input', e=>{ patternState.scale=Number(e.target.value); $('pattern-scale-value').textContent=patternState.scale+'%'; renderPattern(); persistExtras(); });
   $('pattern-rotation').addEventListener('input', e=>{ patternState.rotation=Number(e.target.value); $('pattern-rotation-value').textContent=patternState.rotation+'°'; renderPattern(); persistExtras(); });
   $('pattern-mode').addEventListener('change', e=>{ patternState.mode=e.target.value; renderPattern(); persistExtras(); });
-  $('pattern-center').addEventListener('click',()=>{ patternState.x=180; patternState.y=180; patternState.rotation=0; patternState.applied=false; renderPattern(); persistExtras(); });
+  $('pattern-center').addEventListener('click',()=>{ patternState.x=180; patternState.y=180; patternState.rotation=0; state.pattern=compactPattern(); renderPattern(); persistExtras(); });
   $('pattern-clear').addEventListener('click',()=>{ patternState.sourceData=null; patternState.processedData=null; patternState.applied=false; renderPattern(); persistExtras(); toast('Pattern cleared.'); });
   $('pattern-apply').addEventListener('click',()=>{ if(!patternState.processedData){ toast('Upload an image first.'); return; } patternState.applied=true; state.pattern=compactPattern(); const saved=persistExtras(); renderPattern(); toast(saved?'Pattern applied!':'Pattern applied for this session. Browser storage is full.'); });
 
@@ -442,7 +457,7 @@ show('home');
     if(state.page!=='decorate') return;
     const svg=stampCanvas, r=svg.getBoundingClientRect(), vb=svg.viewBox.baseVal;
     const x=Math.max(70,Math.min(290,(e.clientX-r.left)*vb.width/r.width)); const y=Math.max(72,Math.min(288,(e.clientY-r.top)*vb.height/r.height));
-    if(state.decorateTool==='pattern') { patternState.x=x; patternState.y=y; patternState.applied=false; renderPattern(); persistExtras(); }
+    if(state.decorateTool==='pattern') { patternState.x=x; patternState.y=y; state.pattern=compactPattern(); renderPattern(); persistExtras(); }
   }, true);
 
   // Improve export to include pattern overlay.

@@ -177,6 +177,8 @@
       if(stampScaleValue) stampScaleValue.textContent=(Number(stampState.size)||100)+'%';
     }
     document.getElementById('stamp-notice').textContent=stampState.applied?'Stamp applied and saved to your local draft.':'Previewing motif. Press Apply Stamp to keep it.';
+    // The shape renderer overrides renderStamp; reattach Image to Pattern too.
+    window.CookiePostRefreshPatternOverlay?.();
   };
 
   const stampScaleInput=document.getElementById('stamp-scale');

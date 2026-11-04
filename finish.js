@@ -434,6 +434,8 @@
       const scale=getBorderSize()/100;
       // Match Package CSS border overlay, which is sized to the full 5:7 card.
       const w=1200*scale,h=1680*scale;
+      // CSS background-size clips a zoomed frame to postcard bounds; Canvas must too.
+      x.beginPath();x.rect(0,0,1200,1680);x.clip();
       x.drawImage(frame,600-w/2,840-h/2,w,h);x.restore();
     }
     if(document.fonts){
