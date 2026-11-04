@@ -7,7 +7,7 @@
     templateId: 'template_uyd7pem',
     publicKey: '7ZNDTwTffBh5zTtj4',
     // Replace after deployment and Turnstile setup. Never put the secret key here.
-    turnstileSiteKey: ''
+    turnstileSiteKey: '0x4AAAAAAFzsXhIQvBnrzAAs'
   };
   const button = document.getElementById('email-message');
   if (!button) return;
