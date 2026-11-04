@@ -1,0 +1,1 @@
+V2.1 small gacha fix: removed knob hover/focus/active glow and outlines while preserving click to draw; changed capsule pop from 1150ms to 650ms and total shake from 1180ms to 720ms. No other features changed.

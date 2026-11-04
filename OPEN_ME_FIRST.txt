@@ -1,0 +1,5 @@
+Cookie Post V1.3
+1. Unzip the full ZIP.
+2. Open Cookie-Post-Playable-V1.3/index.html in Safari or Chrome.
+3. Start Creating → Dough → Shape → Decorate → Bake → Package.
+The full archive contains all required files and assets.

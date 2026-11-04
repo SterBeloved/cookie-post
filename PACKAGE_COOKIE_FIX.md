@@ -1,0 +1,1 @@
+V2.9.1: Fixed ReferenceError: fg is not defined in finish.js rebuildStamp(). This prevented Package cookie preview rendering and could affect exported cards. No packaging paper, message fields, styling, or traditional stamp assets were changed.
