@@ -1,438 +1,165 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#b9e4d9">
-  <title>Cookie Post · Sealed with Sugar</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#b9e4d9"><title>Cookie Post · Sealed with Sugar</title><link rel="stylesheet" href="styles.css"></head>
 <body>
-  <main id="app">
-    <section class="screen entry hidden" id="entry" aria-label="Cookie Post title screen">
-      <div class="entry-art">
-        <img class="entry-custom-art" src="assets/start-screen-custom.png" alt="Cookie Post illustrated title screen">
-        <button id="entry-start" class="entry-start-btn" type="button">Press To Start</button>
-      </div>
-    </section>
-    <section class="screen collection-screen hidden" id="collection-screen" aria-label="My Collection">
-      <div class="collection-sheet">
-        <header class="collection-header">
-          <div>
-            <h1>My Collection</h1>
-            <p>Little cookies, sweet memories · saved only in this browser.</p>
-          </div><button type="button" class="outline-button" id="collection-back">‹ Back to Desk</button>
-        </header>
-        <p class="collection-status" id="collection-status" role="status"></p>
-        <div id="collection-grid" class="collection-grid"></div>
-      </div>
-    </section>
+<main id="app">
+ <section class="screen entry hidden" id="entry" aria-label="Cookie Post title screen">
+  <div class="entry-art">
+   <img class="entry-custom-art" src="assets/start-screen-custom.png" alt="Cookie Post illustrated title screen">
+   <button id="entry-start" class="entry-start-btn" type="button">Press To Start</button>
+  </div>
+ </section>
+ <section class="screen collection-screen hidden" id="collection-screen" aria-label="My Collection">
+  <div class="collection-sheet">
+    <header class="collection-header"><div><h1>My Collection</h1><p>Little cookies, sweet memories · saved only in this browser.</p></div><button type="button" class="outline-button" id="collection-back">‹ Back to Desk</button></header>
+    <p class="collection-status" id="collection-status" role="status"></p>
+    <div id="collection-grid" class="collection-grid"></div>
+  </div>
+ </section>
 
-    <section class="screen gacha-screen hidden" id="gacha-screen" aria-label="Cookie Gacha machine">
-      <div class="gacha-stage">
-        <img class="gacha-original-art" src="assets/gacha-scene.png"
-          alt="Pastel cookie capsule machine and sweet scrapbook art">
-        <button id="gacha-back" type="button" class="gacha-back" aria-label="Back to desk">‹ Back to Desk</button>
-        <button id="gacha-knob" type="button" class="gacha-knob" aria-label="Turn the gacha knob"
-          title="Turn the knob"></button>
-        <div class="gacha-action-hint" id="gacha-hint" aria-live="polite">Tap the pink knob to draw a cookie recipe
-        </div>
-        <img class="gacha-capsule hidden" id="gacha-capsule" src="assets/gacha-green-capsule.png"
-          alt="Mint green cookie capsule">
-        <div class="gacha-recipe-note hidden" id="gacha-recipe-note" role="region"
-          aria-label="Your drawn cookie recipe">
-          <div class="gacha-note-head"><span id="gacha-rarity">COOKIE RECIPE</span><button id="gacha-note-close"
-              type="button" aria-label="Close note">×</button></div>
-          <h2 id="gacha-recipe-title">Your Cookie Recipe</h2>
-          <div id="gacha-recipe-fields" class="gacha-recipe-fields"></div>
-          <p id="gacha-recipe-hint"></p>
-          <div class="gacha-note-actions"><button id="gacha-redraw" type="button">Draw Again</button><button
-              id="gacha-create" type="button">Try This Recipe ›</button></div>
-        </div>
-      </div>
-    </section>
-    <aside id="gacha-floating" class="gacha-floating hidden" aria-label="Gacha recipe guide">
-      <div id="gacha-float-header" class="gacha-float-header"><span>✿ My Gacha Recipe</span><span><button
-            id="gacha-collapse" type="button" aria-label="Collapse recipe">−</button><button id="gacha-float-close"
-            type="button" aria-label="Close recipe">×</button></span></div>
-      <div id="gacha-float-content">
-        <h3 id="gacha-float-title"></h3>
-        <div id="gacha-float-fields"></div>
-      </div>
-    </aside>
+ <section class="screen gacha-screen hidden" id="gacha-screen" aria-label="Cookie Gacha machine">
+  <div class="gacha-stage">
+   <img class="gacha-original-art" src="assets/gacha-scene.png" alt="Pastel cookie capsule machine and sweet scrapbook art">
+   <button id="gacha-back" type="button" class="gacha-back" aria-label="Back to desk">‹ Back to Desk</button>
+   <button id="gacha-knob" type="button" class="gacha-knob" aria-label="Turn the gacha knob" title="Turn the knob"></button>
+   <div class="gacha-action-hint" id="gacha-hint" aria-live="polite">Tap the pink knob to draw a cookie recipe</div>
+   <img class="gacha-capsule hidden" id="gacha-capsule" src="assets/gacha-green-capsule.png" alt="Mint green cookie capsule">
+   <div class="gacha-recipe-note hidden" id="gacha-recipe-note" role="region" aria-label="Your drawn cookie recipe">
+    <div class="gacha-note-head"><span id="gacha-rarity">COOKIE RECIPE</span><button id="gacha-note-close" type="button" aria-label="Close note">×</button></div>
+    <h2 id="gacha-recipe-title">Your Cookie Recipe</h2>
+    <div id="gacha-recipe-fields" class="gacha-recipe-fields"></div>
+    <p id="gacha-recipe-hint"></p>
+    <div class="gacha-note-actions"><button id="gacha-redraw" type="button">Draw Again</button><button id="gacha-create" type="button">Try This Recipe ›</button></div>
+   </div>
+  </div>
+ </section>
+ <aside id="gacha-floating" class="gacha-floating hidden" aria-label="Gacha recipe guide">
+  <div id="gacha-float-header" class="gacha-float-header"><span>✿ My Gacha Recipe</span><span><button id="gacha-collapse" type="button" aria-label="Collapse recipe">−</button><button id="gacha-float-close" type="button" aria-label="Close recipe">×</button></span></div>
+  <div id="gacha-float-content"><h3 id="gacha-float-title"></h3><div id="gacha-float-fields"></div></div>
+ </aside>
 
-    <section class="screen home" id="home" aria-label="Cookie Post home">
-      <div class="home-art updated-home">
-        <img src="assets/main-menu.png"
-          alt="Cookie Post desktop menu with cookie plate, journal, gacha machine and polaroid frames">
-        <svg id="home-hit-layer" class="home-hit-layer legacy-mask" viewBox="0 0 1670 942" preserveAspectRatio="none"
-          aria-hidden="true"></svg>
-        <button class="menu-hotspot hotspot-cookies" id="menu-start" aria-label="Free Creation"
-          data-label="Free Creation"></button>
-        <button class="menu-hotspot hotspot-journal" id="menu-journal" aria-label="My Collection"
-          data-label="My Collection"></button>
-        <button class="menu-hotspot hotspot-gacha" id="menu-gacha" aria-label="Cookie Gacha"
-          data-label="Cookie Gacha"></button>
-        <button class="menu-hotspot hotspot-copycat" id="menu-copycat" aria-label="Cookie Copycat"
-          data-label="Cookie Copycat"></button>
-      </div>
-    </section>
-    <section class="screen studio hidden" id="studio" aria-label="Cookie creation studio">
-      <header class="topbar"><button class="brand" id="home-btn" aria-label="Back to Home"><span
-            class="brand-bow">✿</span> Cookie Post</button>
-        <nav class="steps" aria-label="Progress"><button class="step"
-            data-go="dough"><b>1</b><span>Dough</span></button><button class="step"
-            data-go="shape"><b>2</b><span>Shape</span></button><button class="step"
-            data-go="decorate"><b>3</b><span>Decorate</span></button><button class="step"
-            data-go="bake"><b>4</b><span>Bake</span></button><button class="step"
-            data-go="package"><b>5</b><span>Package</span></button><button class="step"
-            data-go="send"><b>6</b><span>Send</span></button></nav><button class="tiny-btn" id="save-btn">Save
-          Draft</button>
-      </header>
-      <div class="heading">
-        <div class="heading-label"><span class="flower">✿</span>
-          <h1 id="page-title">Choose Your Dough</h1><span class="sprig">❧</span>
-        </div>
-        <p id="page-desc">Pick a flavor for your cookie dough!</p>
-      </div>
-      <div class="content-panel">
-        <aside class="preview-area">
-          <div class="cloth">
-            <div class="doily"><svg id="cookie-visual" viewBox="0 0 320 320" role="img"
-                aria-label="Preview of selected dough">
-                <defs>
-                  <filter id="doughShadow">
-                    <feGaussianBlur stdDeviation="3" />
-                  </filter>
-                  <pattern id="speckles" width="17" height="19" patternUnits="userSpaceOnUse">
-                    <circle cx="3" cy="4" r="0.7" fill="#725b4b" opacity=".12" />
-                    <circle cx="12" cy="10" r=".65" fill="#fff" opacity=".45" />
-                  </pattern>
-                </defs>
-                <ellipse cx="161" cy="260" rx="104" ry="17" fill="#775947" opacity=".13" filter="url(#doughShadow)" />
-                <g id="dough-figure"></g>
-              </svg></div>
-          </div>
-        </aside>
-        <div class="options-area">
-          <div class="selection-summary">
-            <p class="preview-caption" id="preview-caption">Original Butter · Unshaped dough</p>
-            <p class="preview-meta" id="preview-meta">Your dough, your rules.</p>
-          </div>
-          <div id="dough-panel">
-            <div class="flavor-grid" id="flavors"></div>
-          </div>
-          <div id="shape-panel" class="hidden">
-            <div class="current-dough">✦ Current Dough: <strong id="current-flavor"></strong> <button
-                id="change-flavor">Change</button></div>
-            <div class="shape-section">
-              <h3 class="mini-heading">Traditional Sets</h3>
-              <p class="mini-subtitle">Apply a classic outer shape together with a matching motif suggestion.</p>
-              <div class="set-grid" id="sets"></div>
-            </div>
-            <div class="shape-section">
-              <h3 class="mini-heading">Classic & Custom Shapes</h3>
-              <div class="shape-grid" id="shapes"></div>
-            </div>
-            <div id="drawing-area" class="draw-area hidden">
-              <div class="draw-toolbar"><strong>Draw My Own</strong><span>Draw a closed outline with mouse, trackpad or
-                  touch.</span></div><canvas id="draw-canvas" width="500" height="320"
-                aria-label="Draw the outline of your cookie"></canvas>
-              <div class="draw-buttons"><button id="clear-drawing" class="outline-button">Clear</button><button
-                  id="use-drawing" class="outline-button">Use My Shape</button></div>
-              <p class="hint" id="drawing-status">Start drawing anywhere on the canvas.</p>
-            </div>
-          </div>
-        </div>
+ <section class="screen home" id="home" aria-label="Cookie Post home">
+  <div class="home-art updated-home">
+   <img src="assets/main-menu.png" alt="Cookie Post desktop menu with cookie plate, journal, gacha machine and polaroid frames">
+   <svg id="home-hit-layer" class="home-hit-layer legacy-mask" viewBox="0 0 1670 942" preserveAspectRatio="none" aria-hidden="true"></svg>
+   <button class="menu-hotspot hotspot-cookies" id="menu-start" aria-label="Free Creation" data-label="Free Creation"></button>
+   <button class="menu-hotspot hotspot-journal" id="menu-journal" aria-label="My Collection" data-label="My Collection"></button>
+   <button class="menu-hotspot hotspot-gacha" id="menu-gacha" aria-label="Cookie Gacha" data-label="Cookie Gacha"></button>
+   <button class="menu-hotspot hotspot-copycat" id="menu-copycat" aria-label="Cookie Copycat" data-label="Cookie Copycat"></button>
+  </div>
+ </section>
+ <section class="screen studio hidden" id="studio" aria-label="Cookie creation studio">
+  <header class="topbar"><button class="brand" id="home-btn" aria-label="Back to Home"><span class="brand-bow">✿</span> Cookie Post</button><nav class="steps" aria-label="Progress"><button class="step" data-go="dough"><b>1</b><span>Dough</span></button><button class="step" data-go="shape"><b>2</b><span>Shape</span></button><button class="step" data-go="decorate"><b>3</b><span>Decorate</span></button><button class="step" data-go="bake"><b>4</b><span>Bake</span></button><button class="step" data-go="package"><b>5</b><span>Package</span></button><button class="step" data-go="send"><b>6</b><span>Send</span></button></nav><button class="tiny-btn" id="save-btn">Save Draft</button></header>
+  <div class="heading"><div class="heading-label"><span class="flower">✿</span><h1 id="page-title">Choose Your Dough</h1><span class="sprig">❧</span></div><p id="page-desc">Pick a flavor for your cookie dough!</p></div>
+  <div class="content-panel">
+   <aside class="preview-area"><div class="cloth"><div class="doily"><svg id="cookie-visual" viewBox="0 0 320 320" role="img" aria-label="Preview of selected dough"><defs><filter id="doughShadow"><feGaussianBlur stdDeviation="3"/></filter><pattern id="speckles" width="17" height="19" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="0.7" fill="#725b4b" opacity=".12"/><circle cx="12" cy="10" r=".65" fill="#fff" opacity=".45"/></pattern></defs><ellipse cx="161" cy="260" rx="104" ry="17" fill="#775947" opacity=".13" filter="url(#doughShadow)"/><g id="dough-figure"></g></svg></div></div></aside>
+   <div class="options-area"><div class="selection-summary"><p class="preview-caption" id="preview-caption">Original Butter · Unshaped dough</p><p class="preview-meta" id="preview-meta">Your dough, your rules.</p></div><div id="dough-panel"><div class="flavor-grid" id="flavors"></div></div><div id="shape-panel" class="hidden"><div class="current-dough">✦ Current Dough: <strong id="current-flavor"></strong> <button id="change-flavor">Change</button></div><div class="shape-section"><h3 class="mini-heading">Traditional Sets</h3><p class="mini-subtitle">Apply a classic outer shape together with a matching motif suggestion.</p><div class="set-grid" id="sets"></div></div><div class="shape-section"><h3 class="mini-heading">Classic & Custom Shapes</h3><div class="shape-grid" id="shapes"></div></div><div id="drawing-area" class="draw-area hidden"><div class="draw-toolbar"><strong>Draw My Own</strong><span>Draw a closed outline with mouse, trackpad or touch.</span></div><canvas id="draw-canvas" width="500" height="320" aria-label="Draw the outline of your cookie"></canvas><div class="draw-buttons"><button id="clear-drawing" class="outline-button">Clear</button><button id="use-drawing" class="outline-button">Use My Shape</button></div><p class="hint" id="drawing-status">Start drawing anywhere on the canvas.</p></div></div></div>
 
-        <div id="stamp-workspace" class="stamp-workspace hidden" aria-label="Cookie decorate editor">
-          <section class="decorate-switch"><button class="decorate-tab active" data-tool="stamps">Traditional
-              Stamps</button><button class="decorate-tab" data-tool="pattern">Image to Pattern</button><button
-              class="decorate-tab" data-tool="icing">Icing Pen</button><button class="decorate-tab"
-              data-tool="cream">Cream Pen</button><button class="decorate-tab" data-tool="toppings">Toppings</button>
-          </section>
-          <section class="stamp-preview-card">
-            <div class="stamp-preview-title">✿ Your cookie · <span id="stamp-cookie-label">Original Butter</span></div>
-            <div class="cookie-drawing-stage"><svg id="stamp-canvas" viewBox="0 0 360 360" role="img"
-                aria-label="Preview of your cookie and embossing" tabindex="0">
-                <defs>
-                  <filter id="stamp-grain">
-                    <feTurbulence baseFrequency="0.19" numOctaves="2" seed="4" result="noise" />
-                    <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
-                    <feComponentTransfer in="gray">
-                      <feFuncA type="linear" slope="0.09" />
-                    </feComponentTransfer>
-                    <feBlend in="SourceGraphic" mode="multiply" />
-                  </filter>
-                </defs>
-                <circle cx="180" cy="180" r="163" fill="#fff9f0" stroke="#ead7c7" stroke-width="6"
-                  stroke-dasharray="5 7" />
-                <g id="stamp-cookie-base"></g>
-                <g id="stamp-imprint"></g>
-                <g id="pattern-imprint"></g>
-              </svg><canvas id="icing-layer" width="360" height="360" aria-label="Icing drawing surface"
-                class="hidden"></canvas></div>
-            <p class="stamp-help">Move the motif by clicking on the cookie. Select a template, adjust, then apply.</p>
-            <div class="stamp-action-row"><button class="outline-button" id="stamp-undo">Undo</button><button
-                class="outline-button" id="stamp-clear">Clear stamp</button></div>
-          </section>
-          <section class="stamp-controls decorate-panel" id="stamps-panel">
-            <h2>Traditional Stamps</h2>
-            <p class="stamp-subtitle">Press a motif into your cookie dough</p>
-            <div id="stamp-grid" class="stamp-grid"></div>
-            <div class="stamp-info" id="stamp-info" aria-live="polite"></div>
-            <div class="stamp-controls-bottom">
-              <label class="stamp-field">Stamp Depth <output id="stamp-depth-value">50%</output><input id="stamp-depth"
-                  type="range" min="10" max="100" value="50"></label>
-              <label class="stamp-field">Rotate <output id="stamp-rotation-value">0°</output><input id="stamp-rotation"
-                  type="range" min="-180" max="180" step="5" value="0"></label>
-              <button class="outline-button" id="stamp-center">Center Pattern</button>
-              <button class="primary-button" id="stamp-apply">Apply Stamp</button>
-            </div>
-            <p class="stamp-notice" id="stamp-notice" role="status">Previewing motif. Press Apply Stamp to keep it on
-              your cookie.</p>
-          </section>
-          <section class="icing-controls decorate-panel hidden" id="icing-panel">
-            <h2>Icing Pen</h2>
-            <p class="stamp-subtitle">Draw onto the cookie; undo or erase individual strokes</p>
-            <div class="icing-palette"><label>Tool <select id="icing-tool">
-                  <option value="pen">Icing Pen</option>
-                  <option value="eraser">Eraser (undo last)</option>
-                </select></label><label>Color <input id="icing-color" type="color" value="#fff9ec"></label><label>Brush
-                width <input id="icing-width" type="range" min="2" max="18" value="6"></label></div>
-            <div class="icing-swatches" aria-label="Icing colors"><button type="button" data-icing-swatch="#fff9ec"
-                style="--sw:#fff9ec" aria-label="Cream"></button><button type="button" data-icing-swatch="#e9a5b2"
-                style="--sw:#e9a5b2" aria-label="Strawberry"></button><button type="button" data-icing-swatch="#a5cbb6"
-                style="--sw:#a5cbb6" aria-label="Mint"></button><button type="button" data-icing-swatch="#8c5a43"
-                style="--sw:#8c5a43" aria-label="Chocolate"></button><button type="button" data-icing-swatch="#eecb70"
-                style="--sw:#eecb70" aria-label="Lemon"></button><button type="button" data-icing-swatch="#c4addf"
-                style="--sw:#c4addf" aria-label="Lavender"></button></div>
-            <div class="stamp-action-row"><button class="outline-button" id="icing-undo">Undo stroke</button><button
-                class="outline-button" id="icing-clear">Clear icing</button></div>
-            <p class="stamp-info">Choose a color and draw on the cookie. Your drawing is saved in the browser.</p>
-          </section>
-          <section class="icing-controls decorate-panel hidden" id="cream-panel" aria-label="Cream piping pen">
-            <h2>Cream Pen</h2>
-            <p class="stamp-subtitle">Pipe soft, raised cream decorations onto your cookie.</p>
-            <div class="icing-palette cream-settings"><label>Color <input id="cream-color" type="color"
-                  value="#fff9ef"></label><label>Tip Size <output id="cream-width-value">12px</output><input
-                  id="cream-width" type="range" min="5" max="27" value="12"></label></div>
-            <div class="icing-swatches" aria-label="Cream colors"><button type="button" data-cream-swatch="#fff9ef"
-                style="--sw:#fff9ef" aria-label="Vanilla"></button><button type="button" data-cream-swatch="#f3b8c7"
-                style="--sw:#f3b8c7" aria-label="Strawberry cream"></button><button type="button"
-                data-cream-swatch="#b5dac7" style="--sw:#b5dac7" aria-label="Mint cream"></button><button type="button"
-                data-cream-swatch="#bc8a6c" style="--sw:#bc8a6c" aria-label="Cocoa cream"></button><button type="button"
-                data-cream-swatch="#f8dea0" style="--sw:#f8dea0" aria-label="Custard"></button><button type="button"
-                data-cream-swatch="#d3c0eb" style="--sw:#d3c0eb" aria-label="Lavender cream"></button></div>
-            <div class="stamp-action-row"><button type="button" class="outline-button" id="cream-undo">Undo
-                Cream</button><button type="button" class="outline-button" id="cream-clear">Clear Cream</button></div>
-            <p class="stamp-info">Draw with your mouse or finger. Cream strokes are saved and included in your exports.
-            </p>
-          </section>
-          <section class="icing-controls decorate-panel hidden" id="toppings-panel" aria-label="Toppings station">
-            <h2>Toppings</h2>
-            <p class="stamp-subtitle">Sprinkle a little sweetness onto your cookie!</p>
-            <div class="topping-grid" role="group" aria-label="Choose a topping">
-              <button type="button" class="topping-choice active" data-topping="sprinkles"><span
-                  class="topping-picture pearls-preview" aria-hidden="true">● <i>●</i> ●</span><strong>Sugar
-                  Pearls</strong></button>
-              <button type="button" class="topping-choice" data-topping="sugarpins"><span
-                  class="topping-picture pins-preview" aria-hidden="true">▰ ╱ ▰</span><strong>Rainbow
-                  Sprinkles</strong></button>
-              <button type="button" class="topping-choice" data-topping="chocolatechips"><span
-                  class="topping-picture choco-preview" aria-hidden="true">◆ ◆ ◆</span><strong>Chocolate
-                  Chips</strong></button>
-
-            </div>
-            <div class="pearl-color-controls" id="pearl-color-controls">
-              <label for="pearl-color">Sugar Pearl Color <input id="pearl-color" type="color" value="#e9a5b2"></label>
-              <div class="pearl-swatches" aria-label="Sugar pearl colors"><button type="button"
-                  data-pearl-swatch="#fff9ef" style="--sw:#fff9ef" aria-label="Ivory pearls"></button><button
-                  type="button" data-pearl-swatch="#e9a5b2" style="--sw:#e9a5b2"
-                  aria-label="Pink pearls"></button><button type="button" data-pearl-swatch="#a1d0bb"
-                  style="--sw:#a1d0bb" aria-label="Mint pearls"></button><button type="button"
-                  data-pearl-swatch="#f2d07a" style="--sw:#f2d07a" aria-label="Gold pearls"></button><button
-                  type="button" data-pearl-swatch="#c8b0e4" style="--sw:#c8b0e4"
-                  aria-label="Lavender pearls"></button><button type="button" data-pearl-swatch="#a5d1e8"
-                  style="--sw:#a5d1e8" aria-label="Blue pearls"></button></div>
-            </div>
-            <div class="topping-settings">
-              <label>Piece Size <output id="topping-size-label">Medium</output><input id="topping-size" type="range"
-                  min="3" max="13" value="7"></label>
-              <label>Sprinkle Amount <output id="topping-density-label">3</output><input id="topping-density"
-                  type="range" min="1" max="6" value="3"></label>
-            </div>
-            <div class="stamp-action-row"><button type="button" class="outline-button" id="topping-undo">Undo
-                topping</button><button type="button" class="outline-button" id="topping-clear">Clear toppings</button>
-            </div>
-            <p class="stamp-info" id="topping-hint">Click or drag across your cookie to scatter toppings. Your toppings
-              are saved and included in PNG exports.</p>
-          </section>
-          <section class="pattern-controls decorate-panel hidden" id="pattern-panel">
-            <h2>Image to Pattern</h2>
-            <p class="stamp-subtitle">Extract a simplified motif, without photo borders or tiny details</p>
-            <label class="upload-box">
-              <span>Upload PNG / JPG</span>
-              <input id="pattern-upload" type="file" accept="image/*">
-            </label>
-            <div class="pattern-thumb-wrap"><canvas id="pattern-canvas" width="220" height="220"
-                aria-label="Processed pattern preview"></canvas></div>
-            <div class="stamp-controls-bottom pattern-grid">
-              <label class="stamp-field">Mode
-                <select id="pattern-mode">
-                  <option value="emboss">Embossed Stamp</option>
-                  <option value="icing">Icing Outline</option>
-                </select>
-              </label>
-              <label class="stamp-field">Focus (center crop) <output id="pattern-focus-value">70%</output><input
-                  id="pattern-focus" type="range" min="30" max="100" value="70"></label>
-              <label class="stamp-field">Simplify (remove details) <output
-                  id="pattern-simplify-value">78%</output><input id="pattern-simplify" type="range" min="0" max="100"
-                  value="78"></label>
-              <label class="stamp-field">Threshold <output id="pattern-threshold-value">140</output><input
-                  id="pattern-threshold" type="range" min="40" max="230" value="140"></label>
-              <label class="stamp-field">Scale <output id="pattern-scale-value">100%</output><input id="pattern-scale"
-                  type="range" min="40" max="180" value="100"></label>
-              <label class="stamp-field">Rotate <output id="pattern-rotation-value">0°</output><input
-                  id="pattern-rotation" type="range" min="-180" max="180" step="5" value="0"></label>
-            </div>
-            <label class="checkbox-row"><input id="pattern-invert" type="checkbox"> Invert lines</label>
-            <div class="stamp-action-row">
-              <button class="outline-button" id="pattern-center">Center Pattern</button>
-              <button class="outline-button" id="pattern-clear">Clear Pattern</button>
-              <button class="primary-button" id="pattern-apply">Apply Pattern</button>
-            </div>
-            <div class="stamp-info" id="pattern-info">Upload an image. Cookie Post will extract its main lines and
-              convert them into a stamp-like or icing-like cookie motif using Canvas.</div>
-          </section>
-        </div>
-      </div>
-      <section class="bake-workspace hidden" id="bake-workspace" aria-label="Bake cookie">
-        <div class="bake-oven">
-          <h2>Into the Oven</h2>
-          <p>Keep your cookie unbaked, or bake it to a golden finish.</p>
-          <div class="bake-window" id="bake-window"><svg id="bake-cookie" viewBox="0 0 360 360"
-              aria-label="Cookie in oven"></svg></div>
-          <div class="bake-status" id="bake-status">Raw dough · No baking yet</div>
-        </div>
-        <div class="bake-controls">
-          <h2>Baking Time</h2>
-          <p>Choose the degree of browning. Your decoration and shape are preserved.</p><label class="bake-label">Golden
-            edges <output id="bake-value">0%</output><input id="bake-level" type="range" min="0" max="100"
-              value="0"></label>
-          <div class="bake-actions"><button class="outline-button" id="bake-skip">Leave Unbaked</button><button
-              class="primary-button" id="bake-apply">Bake Cookie</button></div>
-          <p class="hint">Baking is optional. You can save, export, or send your unbaked creation.</p>
-        </div>
-      </section>
-      <section class="package-workspace hidden" id="package-workspace" aria-label="Package cookie">
-        <div class="package-preview">
-          <h2>My Cookie Gift</h2>
-          <div class="package-paper" id="package-paper"><svg id="package-cookie" viewBox="0 0 360 360"
-              aria-label="Completed cookie"></svg></div>
-          <p id="package-flavor"></p>
-        </div>
-        <div class="package-controls">
-          <h2>Wrap & Write</h2><label>Wrapping paper<select id="paper-select">
-              <option value="mint">Mint Gingham</option>
-              <option value="pink">Strawberry Pink</option>
-              <option value="blue">Powder Blue</option>
-              <option value="lavender">Lavender</option>
-            </select></label>
-          <div class="postcard-border-picker"><label for="postcard-border-select">Postcard Border</label><select
-              id="postcard-border-select" aria-label="Choose postcard ornament">
-              <option value="2646">Vintage Flourish</option>
-              <option value="2647">Blue Filigree</option>
-              <option value="2648">Classic Double Line</option>
-              <option value="2649">Blue Botanical</option>
-              <option value="2650">Art Nouveau Lace</option>
-              <option value="2651">Golden Baroque</option>
-              <option value="2652">Emerald Floral</option>
-              <option value="2653">Golden Corners</option>
-              <option value="2654">Ornate Lace</option>
-              <option value="2655">Victorian Gold</option>
-              <option value="none">No Border</option>
-            </select>
-            <div id="postcard-border-swatches" class="postcard-border-swatches" aria-label="Border design previews">
-            </div>
-          </div>
-          <div class="postcard-custom-background"><label for="postcard-photo-upload">Your Own Photo
-              Background</label><input id="postcard-photo-upload" type="file" accept="image/*"
-              aria-label="Upload a photo for postcard background">
-            <div class="photo-background-actions"><span id="postcard-photo-status" role="status">The photo is
-                automatically centre-cropped to fit the postcard.</span><button type="button" id="postcard-photo-remove"
-                class="outline-button">Use Wrapping Paper</button></div>
-          </div><label>From (optional)<input id="sender-name" type="text" maxlength="80"
-              placeholder="Your name"></label><label>To (optional)<input id="recipient-name" type="text" maxlength="80"
-              placeholder="Someone special"></label><label>Message<textarea id="gift-message" rows="4" maxlength="600"
-              placeholder="Sealed with Sugar... "></textarea></label>
-          <p class="hint">Review the wrapping and message here. Continue to Send to generate a poem, download your card,
-            save it, or deliver it by email.</p>
-        </div>
-      </section>
-      <section class="send-workspace hidden" id="send-workspace" aria-label="Send your Cookie Post">
-        <div class="send-preview">
-          <h2>Ready to Send</h2>
-          <div class="send-card-frame"><img id="send-card-preview" alt="Preview of your complete greeting card" /></div>
-          <p class="hint" id="send-preview-status" role="status">Preparing your greeting card preview...</p>
-        </div>
-        <div class="send-details">
-          <h2>Poetry & A Little Sweetness</h2>
-          <p>Write an optional poem, preview your card, save it to your collection, or send it to someone special.</p>
-          <p class="send-summary" id="send-card-summary"></p>
-          <section class="poetry-box" aria-label="Poetry in a Letter">
-            <h3>Poetry in a Letter</h3>
-            <p class="hint">Write a wish and generate a personalized five-character poem for your card.</p>
-            <label>Occasion (optional)<input id="poetry-occasion" type="text" maxlength="40"
-                placeholder="e.g. Birthday, Mid-Autumn Festival..."></label><label>Theme / wish<input id="poetry-wish"
-                type="text" placeholder="e.g. 中秋团圆，愿你平安"></label>
-            <div class="poetry-buttons"><button class="outline-button" id="poetry-generate">Generate
-                Poem</button><button class="outline-button" id="poetry-remove">Remove Poem</button></div>
-            <label>Poem<textarea id="poetry-text" rows="4" placeholder="诗歌会出现在这里，也可以自己修改"></textarea></label><label
-              class="poetry-checkbox"><input id="poetry-include" type="checkbox"> Include poem in greeting card</label>
-            <p class="hint" id="poetry-note">AI-powered poetry · Enter a wish and generate your poem.</p>
-          </section>
-          <div class="package-actions"><button id="download-cookie" class="outline-button">Cookie PNG
-              (transparent)</button><button id="download-card" class="primary-button">Download Greeting Card</button>
-          </div>
-          <div class="send-collection-actions"><label for="collection-title">Collection name (optional)</label><input
-              id="collection-title" type="text" maxlength="80" placeholder="My sweet little cookie"><button
-              type="button" id="collection-save" class="outline-button">Save to My Collection</button>
-            <p id="collection-save-status" class="hint" role="status"></p>
-          </div>
-          <button id="email-message" type="button" class="primary-button">Send Cookie Post</button>
-          <p class="hint">Email delivery is currently protected by the existing Turnstile security lock. No email is
-            sent until this is configured.</p>
-          <button id="send-back-package" type="button" class="outline-button">Edit My Card</button>
-        </div>
-      </section>
-      <footer class="actions"><button id="prev-btn" class="outline-button">‹ Back</button><button id="next-btn"
-          class="primary-button">Next ›</button><button id="export-btn" class="outline-button">Export PNG</button>
-      </footer>
-    </section>
-    <div class="dialog-backdrop hidden" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-      <div class="dialog-card"><button class="dialog-close" id="close-dialog" aria-label="Close">×</button>
-        <h2 id="dialog-title"></h2>
-        <p id="dialog-text"></p><button class="primary-button" id="dialog-ok">OK</button>
-      </div>
+   <div id="stamp-workspace" class="stamp-workspace hidden" aria-label="Cookie decorate editor"><section class="decorate-switch"><button class="decorate-tab active" data-tool="stamps">Traditional Stamps</button><button class="decorate-tab" data-tool="pattern">Image to Pattern</button><button class="decorate-tab" data-tool="icing">Icing Pen</button><button class="decorate-tab" data-tool="cream">Cream Pen</button><button class="decorate-tab" data-tool="toppings">Toppings</button></section>
+     <section class="stamp-preview-card">
+       <div class="stamp-preview-title">✿ Your cookie · <span id="stamp-cookie-label">Original Butter</span></div>
+       <div class="cookie-drawing-stage"><svg id="stamp-canvas" viewBox="0 0 360 360" role="img" aria-label="Preview of your cookie and embossing" tabindex="0">
+         <defs><filter id="stamp-grain"><feTurbulence baseFrequency="0.19" numOctaves="2" seed="4" result="noise"/><feColorMatrix in="noise" type="saturate" values="0" result="gray"/><feComponentTransfer in="gray"><feFuncA type="linear" slope="0.09"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter></defs>
+         <circle cx="180" cy="180" r="163" fill="#fff9f0" stroke="#ead7c7" stroke-width="6" stroke-dasharray="5 7"/>
+         <g id="stamp-cookie-base"></g><g id="stamp-imprint"></g><g id="pattern-imprint"></g>
+       </svg><canvas id="icing-layer" width="360" height="360" aria-label="Icing drawing surface" class="hidden"></canvas></div>
+       <p class="stamp-help">Move the motif by clicking on the cookie. Select a template, adjust, then apply.</p>
+       <div class="stamp-action-row"><button class="outline-button" id="stamp-undo">Undo</button><button class="outline-button" id="stamp-clear">Clear stamp</button></div>
+     </section>
+     <section class="stamp-controls decorate-panel" id="stamps-panel">
+       <h2>Traditional Stamps</h2>
+       <p class="stamp-subtitle">Press a motif into your cookie dough</p>
+       <div id="stamp-grid" class="stamp-grid"></div>
+       <div class="stamp-info" id="stamp-info" aria-live="polite"></div>
+       <div class="stamp-controls-bottom">
+         <label class="stamp-field">Stamp Depth <output id="stamp-depth-value">50%</output><input id="stamp-depth" type="range" min="10" max="100" value="50"></label>
+         <label class="stamp-field">Rotate <output id="stamp-rotation-value">0°</output><input id="stamp-rotation" type="range" min="-180" max="180" step="5" value="0"></label>
+         <button class="outline-button" id="stamp-center">Center Pattern</button>
+         <button class="primary-button" id="stamp-apply">Apply Stamp</button>
+       </div>
+       <p class="stamp-notice" id="stamp-notice" role="status">Previewing motif. Press Apply Stamp to keep it on your cookie.</p>
+     </section>
+     <section class="icing-controls decorate-panel hidden" id="icing-panel"><h2>Icing Pen</h2><p class="stamp-subtitle">Draw onto the cookie; undo or erase individual strokes</p><div class="icing-palette"><label>Tool <select id="icing-tool"><option value="pen">Icing Pen</option><option value="eraser">Eraser (undo last)</option></select></label><label>Color <input id="icing-color" type="color" value="#fff9ec"></label><label>Brush width <input id="icing-width" type="range" min="2" max="18" value="6"></label></div><div class="icing-swatches" aria-label="Icing colors"><button type="button" data-icing-swatch="#fff9ec" style="--sw:#fff9ec" aria-label="Cream"></button><button type="button" data-icing-swatch="#e9a5b2" style="--sw:#e9a5b2" aria-label="Strawberry"></button><button type="button" data-icing-swatch="#a5cbb6" style="--sw:#a5cbb6" aria-label="Mint"></button><button type="button" data-icing-swatch="#8c5a43" style="--sw:#8c5a43" aria-label="Chocolate"></button><button type="button" data-icing-swatch="#eecb70" style="--sw:#eecb70" aria-label="Lemon"></button><button type="button" data-icing-swatch="#c4addf" style="--sw:#c4addf" aria-label="Lavender"></button></div><div class="stamp-action-row"><button class="outline-button" id="icing-undo">Undo stroke</button><button class="outline-button" id="icing-clear">Clear icing</button></div><p class="stamp-info">Choose a color and draw on the cookie. Your drawing is saved in the browser.</p></section>
+     <section class="icing-controls decorate-panel hidden" id="cream-panel" aria-label="Cream piping pen">
+       <h2>Cream Pen</h2><p class="stamp-subtitle">Pipe soft, raised cream decorations onto your cookie.</p>
+       <div class="icing-palette cream-settings"><label>Color <input id="cream-color" type="color" value="#fff9ef"></label><label>Tip Size <output id="cream-width-value">12px</output><input id="cream-width" type="range" min="5" max="27" value="12"></label></div>
+       <div class="icing-swatches" aria-label="Cream colors"><button type="button" data-cream-swatch="#fff9ef" style="--sw:#fff9ef" aria-label="Vanilla"></button><button type="button" data-cream-swatch="#f3b8c7" style="--sw:#f3b8c7" aria-label="Strawberry cream"></button><button type="button" data-cream-swatch="#b5dac7" style="--sw:#b5dac7" aria-label="Mint cream"></button><button type="button" data-cream-swatch="#bc8a6c" style="--sw:#bc8a6c" aria-label="Cocoa cream"></button><button type="button" data-cream-swatch="#f8dea0" style="--sw:#f8dea0" aria-label="Custard"></button><button type="button" data-cream-swatch="#d3c0eb" style="--sw:#d3c0eb" aria-label="Lavender cream"></button></div>
+       <div class="stamp-action-row"><button type="button" class="outline-button" id="cream-undo">Undo Cream</button><button type="button" class="outline-button" id="cream-clear">Clear Cream</button></div><p class="stamp-info">Draw with your mouse or finger. Cream strokes are saved and included in your exports.</p>
+     </section>
+     <section class="icing-controls decorate-panel hidden" id="toppings-panel" aria-label="Toppings station">
+       <h2>Toppings</h2>
+       <p class="stamp-subtitle">Sprinkle a little sweetness onto your cookie!</p>
+       <div class="topping-grid" role="group" aria-label="Choose a topping">
+         <button type="button" class="topping-choice active" data-topping="sprinkles"><span class="topping-picture pearls-preview" aria-hidden="true">● <i>●</i> ●</span><strong>Sugar Pearls</strong></button>
+         <button type="button" class="topping-choice" data-topping="sugarpins"><span class="topping-picture pins-preview" aria-hidden="true">▰ ╱ ▰</span><strong>Rainbow Sprinkles</strong></button>
+         <button type="button" class="topping-choice" data-topping="chocolatechips"><span class="topping-picture choco-preview" aria-hidden="true">◆ ◆ ◆</span><strong>Chocolate Chips</strong></button>
+         
+       </div>
+       <div class="pearl-color-controls" id="pearl-color-controls">
+         <label for="pearl-color">Sugar Pearl Color <input id="pearl-color" type="color" value="#e9a5b2"></label>
+         <div class="pearl-swatches" aria-label="Sugar pearl colors"><button type="button" data-pearl-swatch="#fff9ef" style="--sw:#fff9ef" aria-label="Ivory pearls"></button><button type="button" data-pearl-swatch="#e9a5b2" style="--sw:#e9a5b2" aria-label="Pink pearls"></button><button type="button" data-pearl-swatch="#a1d0bb" style="--sw:#a1d0bb" aria-label="Mint pearls"></button><button type="button" data-pearl-swatch="#f2d07a" style="--sw:#f2d07a" aria-label="Gold pearls"></button><button type="button" data-pearl-swatch="#c8b0e4" style="--sw:#c8b0e4" aria-label="Lavender pearls"></button><button type="button" data-pearl-swatch="#a5d1e8" style="--sw:#a5d1e8" aria-label="Blue pearls"></button></div>
+       </div>
+       <div class="topping-settings">
+         <label>Piece Size <output id="topping-size-label">Medium</output><input id="topping-size" type="range" min="3" max="13" value="7"></label>
+         <label>Sprinkle Amount <output id="topping-density-label">3</output><input id="topping-density" type="range" min="1" max="6" value="3"></label>
+       </div>
+       <div class="stamp-action-row"><button type="button" class="outline-button" id="topping-undo">Undo topping</button><button type="button" class="outline-button" id="topping-clear">Clear toppings</button></div>
+       <p class="stamp-info" id="topping-hint">Click or drag across your cookie to scatter toppings. Your toppings are saved and included in PNG exports.</p>
+     </section>
+     <section class="pattern-controls decorate-panel hidden" id="pattern-panel">
+       <h2>Image to Pattern</h2>
+       <p class="stamp-subtitle">Extract a simplified motif, without photo borders or tiny details</p>
+       <label class="upload-box">
+         <span>Upload PNG / JPG</span>
+         <input id="pattern-upload" type="file" accept="image/*">
+       </label>
+       <div class="pattern-thumb-wrap"><canvas id="pattern-canvas" width="220" height="220" aria-label="Processed pattern preview"></canvas></div>
+       <div class="stamp-controls-bottom pattern-grid">
+         <label class="stamp-field">Mode
+           <select id="pattern-mode">
+             <option value="emboss">Embossed Stamp</option>
+             <option value="icing">Icing Outline</option>
+           </select>
+         </label>
+         <label class="stamp-field">Focus (center crop) <output id="pattern-focus-value">70%</output><input id="pattern-focus" type="range" min="30" max="100" value="70"></label>
+         <label class="stamp-field">Simplify (remove details) <output id="pattern-simplify-value">78%</output><input id="pattern-simplify" type="range" min="0" max="100" value="78"></label>
+         <label class="stamp-field">Threshold <output id="pattern-threshold-value">140</output><input id="pattern-threshold" type="range" min="40" max="230" value="140"></label>
+         <label class="stamp-field">Scale <output id="pattern-scale-value">100%</output><input id="pattern-scale" type="range" min="40" max="180" value="100"></label>
+         <label class="stamp-field">Rotate <output id="pattern-rotation-value">0°</output><input id="pattern-rotation" type="range" min="-180" max="180" step="5" value="0"></label>
+       </div>
+       <label class="checkbox-row"><input id="pattern-invert" type="checkbox"> Invert lines</label>
+       <div class="stamp-action-row">
+         <button class="outline-button" id="pattern-center">Center Pattern</button>
+         <button class="outline-button" id="pattern-clear">Clear Pattern</button>
+         <button class="primary-button" id="pattern-apply">Apply Pattern</button>
+       </div>
+       <div class="stamp-info" id="pattern-info">Upload an image. Cookie Post will extract its main lines and convert them into a stamp-like or icing-like cookie motif using Canvas.</div>
+     </section>
+   </div>
+  </div>
+  <section class="bake-workspace hidden" id="bake-workspace" aria-label="Bake cookie"><div class="bake-oven"><h2>Into the Oven</h2><p>Keep your cookie unbaked, or bake it to a golden finish.</p><div class="bake-window" id="bake-window"><svg id="bake-cookie" viewBox="0 0 360 360" aria-label="Cookie in oven"></svg></div><div class="bake-status" id="bake-status">Raw dough · No baking yet</div></div><div class="bake-controls"><h2>Baking Time</h2><p>Choose the degree of browning. Your decoration and shape are preserved.</p><label class="bake-label">Golden edges <output id="bake-value">0%</output><input id="bake-level" type="range" min="0" max="100" value="0"></label><div class="bake-actions"><button class="outline-button" id="bake-skip">Leave Unbaked</button><button class="primary-button" id="bake-apply">Bake Cookie</button></div><p class="hint">Baking is optional. You can save, export, or send your unbaked creation.</p></div></section>
+  <section class="package-workspace hidden" id="package-workspace" aria-label="Package and share cookie"><div class="package-preview"><h2>My Cookie Gift</h2><div class="package-paper" id="package-paper"><svg id="package-cookie" viewBox="0 0 360 360" aria-label="Completed cookie"></svg></div><p id="package-flavor"></p></div><div class="package-controls"><h2>Wrap & Write</h2><label>Wrapping paper<select id="paper-select"><option value="mint">Mint Gingham</option><option value="pink">Strawberry Pink</option><option value="blue">Powder Blue</option><option value="lavender">Lavender</option></select></label><div class="postcard-border-picker"><label for="postcard-border-select">Postcard Border</label><select id="postcard-border-select" aria-label="Choose postcard ornament"><option value="2646">Vintage Flourish</option><option value="2647">Blue Filigree</option><option value="2648">Classic Double Line</option><option value="2649">Blue Botanical</option><option value="2650">Art Nouveau Lace</option><option value="2651">Golden Baroque</option><option value="2652">Emerald Floral</option><option value="2653">Golden Corners</option><option value="2654">Ornate Lace</option><option value="2655">Victorian Gold</option><option value="none">No Border</option></select><div id="postcard-border-swatches" class="postcard-border-swatches" aria-label="Border design previews"></div><div class="postcard-border-size-control"><label for="postcard-border-size">Border Size <output id="postcard-border-size-value" for="postcard-border-size">100%</output></label><input type="range" id="postcard-border-size" min="70" max="130" step="5" value="100" aria-label="Postcard border size"><button type="button" class="outline-button" id="postcard-border-size-reset">Reset</button></div></div><div class="postcard-custom-background"><label for="postcard-photo-upload">Your Own Photo Background</label><input id="postcard-photo-upload" type="file" accept="image/*" aria-label="Upload a photo for postcard background"><div class="photo-background-actions"><span id="postcard-photo-status" role="status">The photo is automatically centre-cropped to fit the postcard.</span><button type="button" id="postcard-photo-remove" class="outline-button">Use Wrapping Paper</button></div></div><label>From (optional)<input id="sender-name" type="text" maxlength="80" placeholder="Your name"></label><label>To (optional)<input id="recipient-name" type="text" maxlength="80" placeholder="Someone special"></label><label>Message<textarea id="gift-message" rows="4" maxlength="600" placeholder="Sealed with Sugar... "></textarea></label><p class="hint">Review the wrapping and message here. Continue to Send to generate a poem, download your card, save it, or deliver it by email.</p></div></section>
+  <section class="send-workspace hidden" id="send-workspace" aria-label="Send your Cookie Post">
+    <div class="send-preview">
+      <h2>Ready to Send</h2>
+      <div class="send-card-frame"><img id="send-card-preview" alt="Preview of your complete greeting card" /></div>
+      <p class="hint" id="send-preview-status" role="status">Preparing your greeting card preview...</p>
     </div>
-    <div id="toast" role="status" class="toast hidden"></div>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script src="dough-textures.js"></script>
-  <script src="stamp-shadows.js"></script>
-  <script src="script.js"></script>
-  <script src="postcard-frame-data.js"></script>
-  <script src="finish.js"></script>
-  <script src="poetry.js"></script>
-  <script src="entry-menu.js"></script>
-  <script src="mail.js"></script>
-  <script src="collection.js"></script>
-  <script src="gacha-data.js"></script>
-  <script src="gacha.js"></script>
-  <script src="shape-layout.js"></script>
-</body>
-
-</html>
+    <div class="send-details">
+      <h2>Poetry & A Little Sweetness</h2>
+      <p>Write an optional poem, preview your card, save it to your collection, or send it to someone special.</p>
+      <p class="send-summary" id="send-card-summary"></p>
+      <section class="poetry-box" aria-label="Poetry in a Letter"><h3>Poetry in a Letter</h3><p class="hint">Write a wish and generate a personalized five-character poem for your card.</p><label>Occasion (optional)<input id="poetry-occasion" type="text" maxlength="40" placeholder="e.g. Birthday, Mid-Autumn Festival..."></label><label>Theme / wish<input id="poetry-wish" type="text" placeholder="e.g. 中秋团圆，愿你平安"></label><div class="poetry-buttons"><button class="outline-button" id="poetry-generate">Generate Poem</button><button class="outline-button" id="poetry-remove">Remove Poem</button></div><label>Poem<textarea id="poetry-text" rows="4" placeholder="诗歌会出现在这里，也可以自己修改"></textarea></label><label class="poetry-checkbox"><input id="poetry-include" type="checkbox"> Include poem in greeting card</label><p class="hint" id="poetry-note">AI-powered poetry · Enter a wish and generate your poem.</p></section>
+      <div class="package-actions"><button id="download-cookie" class="outline-button">Cookie PNG (transparent)</button><button id="download-card" class="primary-button">Download Greeting Card</button></div>
+      <div class="send-collection-actions"><label for="collection-title">Collection name (optional)</label><input id="collection-title" type="text" maxlength="80" placeholder="My sweet little cookie"><button type="button" id="collection-save" class="outline-button">Save to My Collection</button><p id="collection-save-status" class="hint" role="status"></p></div>
+      <button id="email-message" type="button" class="primary-button">Send Cookie Post</button>
+      <p class="hint">Email delivery is currently protected by the existing Turnstile security lock. No email is sent until this is configured.</p>
+      <button id="send-back-package" type="button" class="outline-button">Edit My Card</button>
+    </div>
+  </section>
+  <footer class="actions"><button id="prev-btn" class="outline-button">‹ Back</button><button id="next-btn" class="primary-button">Next ›</button><button id="export-btn" class="outline-button">Export PNG</button></footer>
+ </section>
+<div class="dialog-backdrop hidden" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog-card"><button class="dialog-close" id="close-dialog" aria-label="Close">×</button><h2 id="dialog-title"></h2><p id="dialog-text"></p><button class="primary-button" id="dialog-ok">OK</button></div></div>
+ <div id="toast" role="status" class="toast hidden"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script><script src="dough-textures.js"></script><script src="stamp-shadows.js"></script><script src="script.js"></script><script src="postcard-frame-data.js"></script><script src="finish.js"></script><script src="poetry.js"></script><script src="entry-menu.js"></script><script src="mail.js"></script><script src="collection.js"></script><script src="gacha-data.js"></script><script src="gacha.js"></script><script src="shape-layout.js"></script></body></html>
