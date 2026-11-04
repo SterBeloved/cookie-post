@@ -430,11 +430,10 @@
         if(x.measureText(line+ch).width>750){lines.push(line);line=ch;}else line+=ch;
       }lines.push(line);
     }
-    lines.slice(0,poemLines.length?2:4).forEach((v,i)=>x.fillText(v,600,(poemLines.length?1410:1130)+i*46,760));
+    lines.slice(0,poemLines.length?2:4).forEach((v,i)=>x.fillText(v,600,(poemLines.length?1370:1090)+i*46,760));
     x.font='500 26px "Cookie Post WenKai GB", "Songti SC", Georgia, serif';
-    if(journey.to)x.fillText('To '+journey.to.slice(0,50),600,1540,800);
-    if(journey.from)x.fillText('From '+journey.from.slice(0,50),600,1590,800);
-    return c;
+    if(journey.to)x.fillText('To '+journey.to.slice(0,50),600,1500,800);
+    if(journey.from)x.fillText('From '+journey.from.slice(0,50),600,1550,800);
   }
   window.CookiePostCreateCardCanvas=createCardCanvas;
   async function exportCard(){try{await downloadCanvas(await createCardCanvas(),'cookie-post-greeting-card.png')}catch(e){toast('Card export failed: '+e.message)}}
