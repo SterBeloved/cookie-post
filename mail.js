@@ -7,7 +7,7 @@
     templateId: 'template_uyd7pem',
     publicKey: '7ZNDTwTffBh5zTtj4',
     // Replace after deployment and Turnstile setup. Never put the secret key here.
-    turnstileSiteKey: ''
+    turnstileSiteKey: '0x4AAAAAAFzsXhIQvBnrzAAs'
   };
   const button = document.getElementById('email-message');
   if (!button) return;
@@ -27,7 +27,7 @@
       <p class="cookie-mail-status" role="status" aria-live="polite"></p>
       <button class="primary-button cookie-mail-submit" type="submit">Send Cookie Post</button>
     </form>
-    <small>Your greeting card is sent as a PNG attachment (when enabled in the EmailJS template). The online card link remains available as a backup.</small>
+    <small>A compact JPG postcard is included as an email attachment. The original full-resolution PNG remains available via the online link.</small>
   </section>`;
   document.body.append(modal);
   const form = modal.querySelector('form');
@@ -61,6 +61,29 @@
     form.elements.to_email.focus();
   });
   const toBlob = canvas => new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Could not export card image.')), 'image/png'));
+  // EmailJS Variable Attachment accepts a data URL. Compress a separate copy
+  // to fit the Personal plan attachment limit. Keep the original PNG untouched.
+  function makeEmailAttachment(sourceCanvas) {
+    const MAX_BINARY_BYTES = 250 * 1024; // comfortable margin below 500KB plan cap
+    for (const width of [840, 720, 600, 480]) {
+      const height = Math.round(sourceCanvas.height * width / sourceCanvas.width);
+      const compact = document.createElement('canvas');
+      compact.width = width;
+      compact.height = height;
+      const ctx = compact.getContext('2d');
+      if (!ctx) throw new Error('Cannot prepare email attachment.');
+      ctx.fillStyle = '#fffdf7';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(sourceCanvas, 0, 0, width, height);
+      for (const quality of [0.78, 0.64, 0.5]) {
+        const dataUrl = compact.toDataURL('image/jpeg', quality);
+        // Base64 decodes to about 3/4 of its encoded string length.
+        const base64 = dataUrl.split(',')[1] || '';
+        if (Math.floor(base64.length * 0.75) <= MAX_BINARY_BYTES) return dataUrl;
+      }
+    }
+    throw new Error('Unable to compress the postcard for the email attachment.');
+  }
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (submit.disabled) return;
@@ -87,16 +110,17 @@
       });
       const result = await uploaded.json().catch(() => ({}));
       if (!uploaded.ok || !result.imageUrl) throw new Error(result.error || `Upload failed (HTTP ${uploaded.status})`);
+      status.textContent = 'Preparing the attached postcard...';
+      const cardAttachment = makeEmailAttachment(canvas);
       status.textContent = 'Sending your little letter...';
       await window.emailjs.send(CONFIG.serviceId, CONFIG.templateId, {
         to_email: form.elements.to_email.value.trim(),
         from_name: form.elements.from_name.value.trim() || 'A Cookie Post friend',
         message: form.elements.message.value.trim(),
         card_url: result.imageUrl,
-        // EmailJS: Template > Attachments > Dynamic > Variable Attachment.
-        // Parameter name must be EXACTLY card_attachment.
-        // A data URL is supported by EmailJS for a canvas-generated PNG.
-        card_attachment: canvas.toDataURL('image/png'),
+        // Direct JPEG attachment data; no external-image download by EmailJS.
+        // EmailJS Attachments: Variable Attachment, key card_attachment, file Cookie-Post.jpg.
+        card_attachment: cardAttachment,
         poem: (() => {
           const poem = window.CookiePoetry?.get?.();
           return poem?.include && poem?.text ? poem.text.trim() : '';
