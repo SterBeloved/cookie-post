@@ -7,7 +7,7 @@
     templateId: 'template_uyd7pem',
     publicKey: '7ZNDTwTffBh5zTtj4',
     // Replace after deployment and Turnstile setup. Never put the secret key here.
-    turnstileSiteKey: '0x4AAAAAAFzsXhIQvBnrzAAs'
+    turnstileSiteKey: ''
   };
   const button = document.getElementById('email-message');
   if (!button) return;
@@ -27,7 +27,7 @@
       <p class="cookie-mail-status" role="status" aria-live="polite"></p>
       <button class="primary-button cookie-mail-submit" type="submit">Send Cookie Post</button>
     </form>
-    <small>Card images are stored temporarily and deleted from R2 after approximately 30 days. Your recipient can view the card via its link.</small>
+    <small>Your greeting card is sent as a PNG attachment (when enabled in the EmailJS template). The online card link remains available as a backup.</small>
   </section>`;
   document.body.append(modal);
   const form = modal.querySelector('form');
@@ -76,7 +76,8 @@
     submit.disabled = true;
     try {
       status.textContent = 'Wrapping your cookie card...';
-      const blob = await toBlob(await window.CookiePostCreateCardCanvas());
+      const canvas = await window.CookiePostCreateCardCanvas();
+      const blob = await toBlob(canvas);
       if (blob.size > 5 * 1024 * 1024) throw new Error('Card exceeds 5MB. Please reduce its size.');
       status.textContent = 'Uploading your card...';
       const uploaded = await fetch(CONFIG.worker + '/api/upload', {
@@ -92,6 +93,10 @@
         from_name: form.elements.from_name.value.trim() || 'A Cookie Post friend',
         message: form.elements.message.value.trim(),
         card_url: result.imageUrl,
+        // EmailJS: Template > Attachments > Dynamic > Variable Attachment.
+        // Parameter name must be EXACTLY card_attachment.
+        // A data URL is supported by EmailJS for a canvas-generated PNG.
+        card_attachment: canvas.toDataURL('image/png'),
         poem: (() => {
           const poem = window.CookiePoetry?.get?.();
           return poem?.include && poem?.text ? poem.text.trim() : '';
