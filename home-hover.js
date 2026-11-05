@@ -1,58 +1,37 @@
-/* V2.17 — hover-only home outlines and labels. No navigation changes. */
+/* V2.19 -- Original user PNG art only. Never add text or animation. */
 (() => {
-  const home = document.getElementById('home');
-  const art = home && home.querySelector('.updated-home');
-  if (!art) return;
-  const items = [
-    ['menu-start', 'free-creation', 'Free Creation'],
-    ['menu-journal', 'my-collection', 'My Collection'],
-    ['menu-gacha', 'cookie-gacha', 'Cookie Gacha'],
-    ['menu-copycat', 'cookie-copycat', 'Cookie Copycat']
+  const home=document.getElementById('home');
+  const art=home?.querySelector('.updated-home');
+  if(!art)return;
+  // Clean possible old DOM overlays if script is loaded twice during local previews.
+  art.querySelectorAll('.home-hover-caption,.home-hover-outline').forEach(node=>node.remove());
+  const entries=[
+    ['menu-start','hover-free-creation.png'],
+    ['menu-journal','hover-my-collection.png'],
+    ['menu-gacha','hover-cookie-gacha.png'],
+    ['menu-copycat','hover-cookie-copycat.png']
   ];
-  let active = null;
-  const elements = new Map();
-  const hide = () => {
-    if (!active) return;
-    active.outline.classList.remove('is-visible');
-    active.caption.classList.remove('is-visible');
-    active = null;
-  };
-  for (const [id, key, label] of items) {
-    const hotspot = document.getElementById(id);
-    if (!hotspot) continue;
-    const outline = document.createElement('img');
-    outline.src = 'assets/hover-' + key + '.png';
-    outline.alt = '';
-    outline.setAttribute('aria-hidden', 'true');
-    outline.decoding = 'async';
-    outline.className = 'home-hover-outline home-hover-outline--' + key;
-    const caption = document.createElement('span');
-    caption.className = 'home-hover-caption home-hover-caption--' + key;
-    caption.textContent = label;
-    caption.setAttribute('aria-hidden', 'true');
-    // Put noninteractive overlays before buttons; labels remain positioned above buttons.
-    art.insertBefore(outline, art.querySelector('.menu-hotspot'));
-    art.appendChild(caption);
-    elements.set(id, {outline, caption});
-    const show = () => {
-      if (home.classList.contains('hidden')) return;
-      hide();
-      active = elements.get(id);
-      active.outline.classList.add('is-visible');
-      active.caption.classList.add('is-visible');
-    };
-    hotspot.addEventListener('pointerenter', e => {
-      if (e.pointerType !== 'touch') show();
+  let visible=null;
+  const hide=()=>{if(visible){visible.classList.remove('is-visible');visible=null;}};
+  const firstButton=art.querySelector('.menu-hotspot');
+  for(const [id,filename] of entries){
+    const button=document.getElementById(id);
+    if(!button)continue;
+    const overlay=document.createElement('img');
+    overlay.src='assets/'+filename;
+    overlay.alt='';overlay.decoding='async';
+    overlay.setAttribute('aria-hidden','true');
+    overlay.className='home-hover-outline';
+    art.insertBefore(overlay,firstButton);
+    button.addEventListener('pointerenter',event=>{
+      if(event.pointerType==='touch'||home.classList.contains('hidden'))return;
+      hide();visible=overlay;overlay.classList.add('is-visible');
     });
-    hotspot.addEventListener('pointerleave', hide);
-    hotspot.addEventListener('focus', show);
-    hotspot.addEventListener('blur', hide);
-    hotspot.addEventListener('pointerdown', hide);
-    hotspot.addEventListener('click', hide);
+    button.addEventListener('pointerleave',hide);
+    button.addEventListener('blur',hide);
+    button.addEventListener('pointerdown',hide);
+    button.addEventListener('click',hide);
   }
-  // When returning home, do not retain hover state from previous navigation.
-  const watcher = new MutationObserver(() => {
-    if (home.classList.contains('hidden')) hide();
-  });
-  watcher.observe(home, {attributes:true, attributeFilter:['class']});
+  new MutationObserver(()=>{if(home.classList.contains('hidden'))hide();})
+    .observe(home,{attributes:true,attributeFilter:['class']});
 })();

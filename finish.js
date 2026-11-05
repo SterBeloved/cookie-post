@@ -336,13 +336,13 @@
       const w=img.naturalWidth*scale,h=img.naturalHeight*scale;
       x.drawImage(img,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
       journey.photoBackground=canvas.toDataURL('image/jpeg',0.78);
-      keep();setPhotoPreview();
+      keep();setPhotoPreview();refreshPackageIfLandscape();
       if(state.page==='send')renderSendPage();
     }catch(error){console.error('[Cookie Post] Photo background:',error);toast('Could not use this photo. Try JPG or PNG.');}
     finally{URL.revokeObjectURL(url);}
   }
   if($('postcard-photo-upload'))$('postcard-photo-upload').addEventListener('change',e=>handlePhoto(e.target.files?.[0]));
-  if($('postcard-photo-remove'))$('postcard-photo-remove').addEventListener('click',()=>{journey.photoBackground=null;keep();setPhotoPreview();if($('postcard-photo-upload'))$('postcard-photo-upload').value='';if(state.page==='send')renderSendPage();});
+  if($('postcard-photo-remove'))$('postcard-photo-remove').addEventListener('click',()=>{journey.photoBackground=null;keep();setPhotoPreview();refreshPackageIfLandscape();if($('postcard-photo-upload'))$('postcard-photo-upload').value='';if(state.page==='send')renderSendPage();});
   async function paintPhotoBackground(ctx){
     if(!journey.photoBackground)return false;
     const img=new Image();img.src=journey.photoBackground;await img.decode();
@@ -360,6 +360,53 @@
     g.restore();g.globalCompositeOperation='source-over';
     return clean;
   }
+  const ChineseWrappingPapers=new Set(['cn-mist-lilac','cn-sky-blue','cn-cream-gold','cn-blush-pink','cn-soft-green','cn-celadon-mist','cn-warm-taupe']);
+  const wrappingImageCache=new Map();
+  async function drawChineseWrappingPaper(ctx){
+    if(!ChineseWrappingPapers.has(journey.paper))return false;
+    const name=journey.paper;
+    if(!wrappingImageCache.has(name)){
+      const promise=new Promise((resolve,reject)=>{
+        const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('Wrapping paper unavailable: '+name));
+        image.src='assets/wrapping/'+name+'.jpg';
+      });
+      wrappingImageCache.set(name,promise);
+    }
+    const img=await wrappingImageCache.get(name);
+    const scale=Math.max(1200/img.naturalWidth,1680/img.naturalHeight);
+    const width=img.naturalWidth*scale,height=img.naturalHeight*scale;
+    ctx.drawImage(img,(1200-width)/2,(1680-height)/2,width,height);
+    return true;
+  }
+  let packagePreviewTicket=0;
+  async function refreshLandscapePackagePreview(){
+    const ticket=++packagePreviewTicket;
+    const stage=$('package-orientation-stage');
+    if(!stage||journey.orientation!=='landscape'||state.page!=='package')return;
+    let img=$('package-landscape-preview');
+    if(!img){img=document.createElement('img');img.id='package-landscape-preview';img.className='package-landscape-preview';img.alt='Landscape greeting card with cookie on the left and text on the right';stage.append(img);}
+    try{
+      const canvas=await createLandscapeCardCanvas();
+      if(ticket!==packagePreviewTicket||journey.orientation!=='landscape'||state.page!=='package')return;
+      img.src=canvas.toDataURL('image/png');
+    }catch(err){console.warn('[Cookie Post] Package landscape preview:',err);}
+  }
+  function updateOrientationPreview(){
+    const mode=journey.orientation==='landscape'?'landscape':'portrait';
+    const select=$('postcard-orientation');if(select)select.value=mode;
+    const stage=$('package-orientation-stage');if(stage)stage.classList.toggle('is-landscape',mode==='landscape');
+    if(mode==='landscape')refreshLandscapePackagePreview();
+    else ++packagePreviewTicket;
+  }
+  function refreshPackageIfLandscape(){
+    if(journey.orientation==='landscape'&&state.page==='package')refreshLandscapePackagePreview();
+  }
+  const orientationSelect=$('postcard-orientation');
+  if(orientationSelect)orientationSelect.addEventListener('change',event=>{
+    journey.orientation=event.target.value==='landscape'?'landscape':'portrait';
+    keep();updateOrientationPreview();
+    if(state.page==='send')renderSendPage();
+  });
   function wrapColors(){return {mint:['#bfe4d4','#fffaf1'],pink:['#edb8c3','#fff5f8'],blue:['#bdd3e9','#f4f8ff'],lavender:['#d1c3e9','#faf5ff']}[journey.paper]||['#bfe4d4','#fffaf1']}
   async function exportCookie(){try{const c=await rasterCookie();await downloadCanvas(c,'cookie-post-sticker.png');}catch(e){toast('PNG export failed: '+e.message)}}
   // Postcard border PNG scale. Saved alongside the user's existing card settings.
@@ -377,11 +424,13 @@
   if(sizeSlider)sizeSlider.addEventListener('input',event=>{
     journey.borderSize=Number(event.target.value);
     updateBorderSize();keep();
+    refreshPackageIfLandscape();
     if(state.page==='send')renderSendPage();
   });
   const resetBorder=$('postcard-border-size-reset');
   if(resetBorder)resetBorder.addEventListener('click',()=>{
     journey.borderSize=100;updateBorderSize();keep();
+    refreshPackageIfLandscape();
     if(state.page==='send')renderSendPage();
   });
   const borderDesigns=[['2646','Vintage Flourish'],['2647','Blue Filigree'],['2648','Classic Double Line'],['2649','Blue Botanical'],['2650','Art Nouveau Lace'],['2651','Golden Baroque'],['2652','Emerald Floral'],['2653','Golden Corners'],['2654','Ornate Lace'],['2655','Victorian Gold']];
@@ -412,15 +461,16 @@
     document.querySelectorAll('.postcard-border-choice').forEach(b=>b.classList.toggle('selected',b.dataset.border===id));
     // Keep a small live border preview next to the actual cookie in Package.
     const paper=$('package-paper');if(paper)paper.style.setProperty('--postcard-border-url',id==='none'?'none':`url("assets/postcard-frames/frame-${id}.png")`);
-    updateBorderSize();
+    updateBorderSize();refreshPackageIfLandscape();
     if(state.page==='send')renderSendPage();
   }
   if($('postcard-border-select'))$('postcard-border-select').addEventListener('change',e=>setBorder(e.target.value));
-    async function createCardCanvas(){
+    async function createPortraitCardCanvas(){
     const c=document.createElement('canvas');c.width=1200;c.height=1680;
     const x=c.getContext('2d');const colors=wrapColors();
     const hasPhoto=journey.photoBackground?await paintPhotoBackground(x):false;
-    if(!hasPhoto){
+    const hasChinesePaper=!hasPhoto&&await drawChineseWrappingPaper(x);
+    if(!hasPhoto&&!hasChinesePaper){
       x.fillStyle=colors[0];x.fillRect(0,0,1200,1680);
       x.fillStyle=colors[1];
       for(let yy=0;yy<1680;yy+=70)for(let xx=0;xx<1200;xx+=70)if((xx/70+yy/70)%2===0)x.fillRect(xx,yy,70,70);
@@ -485,6 +535,87 @@
     if(journey.from)x.fillText('From '+journey.from.slice(0,50),600,1410,800);
     return c;
   }
+  // V2.20: a genuine landscape composition, not a rotated portrait image.
+  // Same cookie, paper, frame, poem and names; only layout changes.
+  async function createLandscapeCardCanvas(){
+    const W=1680,H=1200;
+    const c=document.createElement('canvas');c.width=W;c.height=H;
+    const x=c.getContext('2d');
+    const cover=(img)=>{
+      const scale=Math.max(W/img.width,H/img.height);
+      const w=img.width*scale,h=img.height*scale;
+      x.drawImage(img,(W-w)/2,(H-h)/2,w,h);
+    };
+    let customBackground=false;
+    if(journey.photoBackground){
+      const image=new Image();image.src=journey.photoBackground;await image.decode();
+      cover(image);customBackground=true;
+    }else if(ChineseWrappingPapers.has(journey.paper)){
+      const paper=new Image();paper.src='assets/wrapping/'+journey.paper+'.jpg';await paper.decode();
+      cover(paper);
+    }else{
+      const colors=wrapColors();
+      x.fillStyle=colors[0];x.fillRect(0,0,W,H);
+      x.fillStyle=colors[1];
+      for(let y=0;y<H;y+=70)for(let xx=0;xx<W;xx+=70)if(((xx+y)/70)%2===0)x.fillRect(xx,y,70,70);
+    }
+    const cookie=await cleanCookieForCard();
+    x.save();x.shadowColor='rgba(87,57,42,.20)';x.shadowBlur=18;x.shadowOffsetY=10;
+    x.drawImage(cookie,125,265,655,655);x.restore();
+    // The original frame is portrait-shaped; turning only the decorative frame
+    // lets it cover a landscape card without rotating its cookie or lettering.
+    const frame=await getFrameImage(journey.border||'2655');
+    if(frame){
+      const scale=getBorderSize()/100;
+      x.save();x.beginPath();x.rect(0,0,W,H);x.clip();
+      x.shadowColor='rgba(78,49,32,.24)';x.shadowBlur=3;
+      x.translate(W/2,H/2);x.rotate(Math.PI/2);
+      x.drawImage(frame,-H*scale/2,-W*scale/2,H*scale,W*scale);
+      x.restore();
+    }
+    if(document.fonts){
+      try{await Promise.all([
+        document.fonts.load('42px "Cookie Post WenKai GB"','春风送暖花开'),
+        document.fonts.load('500 26px "Cookie Post WenKai GB"','寄语')
+      ]);}catch(err){console.warn('[Cookie Post] Postcard font unavailable:',err);}
+    }
+    const poem=window.CookiePoetry?.get?.()||{};
+    const poemLines=(poem.include&&poem.text)?poem.text.split(/\n+/).map(t=>t.trim()).filter(Boolean).slice(0,4):[];
+    const left=835,right=1510,cx=(left+right)/2;
+    // Light translucent paper provides readability without obscuring artwork.
+    x.save();x.shadowColor='rgba(255,255,255,.25)';x.shadowBlur=23;
+    const mist=x.createLinearGradient(left,170,right,1030);
+    mist.addColorStop(0,'rgba(255,253,249,.47)');
+    mist.addColorStop(.55,'rgba(255,252,247,.43)');
+    mist.addColorStop(1,'rgba(255,255,255,.36)');
+    x.fillStyle=mist;x.beginPath();x.roundRect(left,148,right-left,905,35);x.fill();x.restore();
+    x.fillStyle=customBackground?'#47352e':'#553b35';
+    x.textAlign='center';x.textBaseline='alphabetic';
+    if(poemLines.length){
+      x.font='42px "Cookie Post WenKai GB", "Songti SC", serif';
+      poemLines.forEach((line,i)=>x.fillText(line.slice(0,22),cx,310+i*78,630));
+    }
+    x.font='32px "Cookie Post WenKai GB", "Songti SC", Georgia, serif';
+    const message=journey.message||'';
+    const lines=[];
+    for(const paragraph of message.split(/\n/)){
+      let line='';
+      for(const ch of [...paragraph]){
+        if(line&&x.measureText(line+ch).width>580){lines.push(line);line=ch;}
+        else line+=ch;
+      }
+      lines.push(line);
+    }
+    const firstMessageY=poemLines.length?685:365;
+    lines.slice(0,poemLines.length?4:9).forEach((line,i)=>x.fillText(line,cx,firstMessageY+i*49,610));
+    x.font='500 26px "Cookie Post WenKai GB", "Songti SC", Georgia, serif';
+    if(journey.to)x.fillText('To '+journey.to.slice(0,50),cx,945,620);
+    if(journey.from)x.fillText('From '+journey.from.slice(0,50),cx,994,620);
+    return c;
+  }
+  async function createCardCanvas(){
+    return journey.orientation==='landscape'?createLandscapeCardCanvas():createPortraitCardCanvas();
+  }
   window.CookiePostCreateCardCanvas=createCardCanvas;
   async function exportCard(){try{await downloadCanvas(await createCardCanvas(),'cookie-post-greeting-card.png')}catch(e){toast('Card export failed: '+e.message)}}
   function renderBake(){
@@ -502,7 +633,7 @@
   $('bake-skip').addEventListener('click',()=>{journey.baked=false;journey.bakeLevel=0;keep();renderBake();toast('Kept as raw dough.');});
   function renderPackage(){
     paintIcing();
-    $('package-paper').dataset.paper=journey.paper;$('paper-select').value=journey.paper;
+    $('package-paper').dataset.paper=journey.paper;$('paper-select').value=journey.paper;updateOrientationPreview();
     renderPostcardBorderChoices();setBorder(journey.border||'2655');
     if($('sender-name'))$('sender-name').value=journey.from||'';$('recipient-name').value=journey.to;$('gift-message').value=journey.message;
     $('package-flavor').textContent=flavor().name+' · '+(state.shape?shape().name:'Circle');
@@ -515,12 +646,12 @@
     const group=svgTag('g',{'clip-path':'url(#package-cookie-silhouette)'});
     for(const child of [...target.children])if(child!==defs)group.append(child);
     group.append(svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')}));target.append(group);
-    setPhotoPreview();
+    setPhotoPreview();refreshPackageIfLandscape();
   }
-  $('paper-select').addEventListener('change',e=>{journey.paper=e.target.value;keep();$('package-paper').dataset.paper=journey.paper});
-  if($('sender-name'))$('sender-name').addEventListener('input',e=>{journey.from=e.target.value;keep()});
-  $('recipient-name').addEventListener('input',e=>{journey.to=e.target.value;keep()});
-  $('gift-message').addEventListener('input',e=>{journey.message=e.target.value;keep()});
+  $('paper-select').addEventListener('change',e=>{journey.paper=e.target.value;keep();$('package-paper').dataset.paper=journey.paper;refreshPackageIfLandscape();});
+  if($('sender-name'))$('sender-name').addEventListener('input',e=>{journey.from=e.target.value;keep();refreshPackageIfLandscape()});
+  $('recipient-name').addEventListener('input',e=>{journey.to=e.target.value;keep();refreshPackageIfLandscape()});
+  $('gift-message').addEventListener('input',e=>{journey.message=e.target.value;keep();refreshPackageIfLandscape()});
   $('download-cookie').addEventListener('click',exportCookie);
   $('download-card').addEventListener('click',exportCard);
   // The mail dialog is managed by mail.js; do not open mailto drafts.
