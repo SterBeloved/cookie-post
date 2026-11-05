@@ -1,0 +1,15 @@
+/* Cookie Post V2.21 | Hover-triggered soundtrack drawer. Does not modify the studio. */
+.cookie-bgm-dock[hidden]{display:none!important}
+.cookie-bgm-dock{position:fixed;top:0;right:clamp(12px,2.6vw,38px);z-index:95;width:240px;max-width:calc(100vw - 24px);font-family:Georgia,'Times New Roman',serif;color:#795144;text-align:left}
+.cookie-bgm-trigger{display:flex;align-items:center;justify-content:center;gap:5px;min-width:102px;height:29px;margin-left:auto;padding:3px 13px 5px;background:rgba(255,250,241,.95);color:#95646e;border:1px solid #fff;border-top:0;border-radius:0 0 15px 15px;box-shadow:0 3px 7px #446c5c29;font-size:15px;font-weight:700;font-style:italic;cursor:pointer;position:relative;z-index:2}
+.cookie-bgm-trigger:focus-visible,.cookie-bgm-toggle:focus-visible,.cookie-bgm-controls input:focus-visible{outline:2px solid #478d79;outline-offset:3px}
+.cookie-bgm-panel{position:absolute;top:28px;right:0;width:240px;background:rgba(255,250,243,.97);border:2px solid #faf6ed;outline:1px dashed #95c8b5;outline-offset:-8px;border-radius:0 0 22px 22px;box-shadow:0 8px 20px #5e836337;padding:17px 16px 16px;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-5px);transition:opacity .13s ease,transform .13s ease,visibility .13s}
+.cookie-bgm-dock:hover .cookie-bgm-panel,.cookie-bgm-dock:focus-within .cookie-bgm-panel,.cookie-bgm-dock.is-open .cookie-bgm-panel{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.cookie-bgm-heading{text-align:center;font-size:18px;font-weight:bold;font-style:italic;color:#b77788;margin:4px 0 13px}
+.cookie-bgm-controls{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:11px 9px}
+.cookie-bgm-toggle{grid-row:1/3;background:#edc2cc;color:#754c58;border:2px solid #fff9f2;border-radius:16px;padding:8px 12px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 2px 0 #cfa7b0}
+.cookie-bgm-controls label{display:flex;justify-content:space-between;gap:6px;font-size:13px;font-weight:600;white-space:nowrap}
+.cookie-bgm-controls input[type=range]{width:100%;accent-color:#d994a7;cursor:pointer;min-width:0}
+.cookie-bgm-controls output{font-variant-numeric:tabular-nums;color:#af7d8c}
+@media(max-width:580px){.cookie-bgm-dock{right:9px;width:220px}.cookie-bgm-panel{width:220px}.cookie-bgm-trigger{font-size:14px;min-width:90px}}
+@media(prefers-reduced-motion:reduce){.cookie-bgm-panel{transition:none}}

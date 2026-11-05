@@ -1,0 +1,15 @@
+Cookie Post V2.20 — Landscape Left Cookie / Right Text
+=======================================================
+Based on V2.19. All four original hover PNG assets and seven cropped Chinese wrapping papers remain unchanged.
+
+New:
+- Landscape (1680 x 1200) is a true layout: upright cookie at left; upright poem, greeting, To/From at right.
+- Landscape selected background is fitted with cover; selected ornament frame is rotated independently 90 degrees to fit around the full card.
+- Package landscape preview uses the SAME rendered card canvas as Send / PNG download / Email.
+- Portrait remains the existing V2.19/V2.16 text layout without changes.
+- Changes to wrapping, border, border size, names, message, and custom background refresh landscape Package preview.
+- Existing Decorate UI, Chinese papers, home hover PNG, photo upload, poetry, and mail pipeline are untouched.
+
+Upload the zip contents to repository root with folders intact. Replace existing files with the same names; do not delete the untouched source files.
+
+Validation: node --check for JavaScript and ZIP file CRC validation; browser integration has not been verified in this environment.

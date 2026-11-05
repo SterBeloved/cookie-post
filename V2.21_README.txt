@@ -1,0 +1,15 @@
+Cookie Post V2.21 | Hidden BGM Drawer
+
+Base: V2.20 Landscape Layout Replacement; all V2.20 changes preserved.
+
+Upload this ZIP contents to GitHub repository root, preserving folder paths.
+New or updated files: index.html, music-v221.css, music-v221.js, assets/music/cookiepost_bgm.mp3.
+Other V2.20 files are included as-is for one-package convenience. Do not delete or overwrite the existing script.js, shape-layout.js, mail.js, styles.css, decorate-v218.* and other files not in this ZIP.
+
+Music rules:
+- Silent on the initial Press To Start entry screen.
+- User click on Press To Start starts BGM at 15% volume when browser policy allows.
+- Playback continues across home, editor, bake, package, send, gacha, collection.
+- Hover top-right Music tab (or tap on touchscreen) for dropdown.
+- Pause/Play and 0-100% volume controls; looped playback.
+- Safari/browser restrictions may require an additional user gesture.

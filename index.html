@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#b9e4d9"><title>Cookie Post · Sealed with Sugar</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="decorate-v218.css"><link rel="stylesheet" href="home-hover.css"><link rel="stylesheet" href="visual-v219.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#b9e4d9"><title>Cookie Post · Sealed with Sugar</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="decorate-v218.css"><link rel="stylesheet" href="home-hover.css"><link rel="stylesheet" href="visual-v219.css"><link rel="stylesheet" href="music-v221.css"></head>
 <body>
 <main id="app">
  <section class="screen entry hidden" id="entry" aria-label="Cookie Post title screen">
@@ -162,4 +162,17 @@
 <div class="dialog-backdrop hidden" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog-card"><button class="dialog-close" id="close-dialog" aria-label="Close">×</button><h2 id="dialog-title"></h2><p id="dialog-text"></p><button class="primary-button" id="dialog-ok">OK</button></div></div>
  <div id="toast" role="status" class="toast hidden"></div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script><script src="dough-textures.js"></script><script src="stamp-shadows.js"></script><script src="script.js"></script><script src="postcard-frame-data.js"></script><script src="finish.js"></script><script src="poetry.js"></script><script src="entry-menu.js"></script><script src="mail.js"></script><script src="collection.js"></script><script src="gacha-data.js"></script><script src="gacha.js"></script><script src="shape-layout.js"></script><script src="home-hover.js"></script><script src="decorate-v218.js"></script></body></html>
+<!-- V2.21 music dock: all pages except the entry screen -->
+<aside id="cookie-bgm-dock" class="cookie-bgm-dock" aria-label="Background music player" hidden>
+  <button id="cookie-bgm-trigger" class="cookie-bgm-trigger" type="button" aria-expanded="false" aria-controls="cookie-bgm-panel" title="Background Music">♫ <span>Music</span></button>
+  <div id="cookie-bgm-panel" class="cookie-bgm-panel">
+    <div class="cookie-bgm-heading">♫ A Little Melody</div>
+    <div class="cookie-bgm-controls">
+      <button id="cookie-bgm-toggle" class="cookie-bgm-toggle" type="button" aria-label="Pause music">Pause</button>
+      <label for="cookie-bgm-volume">Volume <output id="cookie-bgm-volume-value" for="cookie-bgm-volume">15%</output></label>
+      <input id="cookie-bgm-volume" type="range" min="0" max="100" step="1" value="15" aria-label="Music volume">
+    </div>
+  </div>
+  <audio id="cookie-bgm-audio" src="assets/music/cookiepost_bgm.mp3" preload="none" loop></audio>
+</aside>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script><script src="dough-textures.js"></script><script src="stamp-shadows.js"></script><script src="script.js"></script><script src="postcard-frame-data.js"></script><script src="finish.js"></script><script src="poetry.js"></script><script src="entry-menu.js"></script><script src="mail.js"></script><script src="collection.js"></script><script src="gacha-data.js"></script><script src="gacha.js"></script><script src="shape-layout.js"></script><script src="home-hover.js"></script><script src="decorate-v218.js"></script><script src="music-v221.js"></script></body></html>
