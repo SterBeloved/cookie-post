@@ -195,12 +195,12 @@
   document.querySelectorAll('.decorate-tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tool)));
   // The previous toolbar already handles the other two tabs; this listener adds icing mode.
   const pos=e=>{const r=icing.getBoundingClientRect();return{x:(e.clientX-r.left)*360/r.width,y:(e.clientY-r.top)*360/r.height}};
-  icing.addEventListener('pointerdown',e=>{if(state.decorateTool==='icing'&&$('icing-tool').value==='eraser'){journey.strokes.pop();paintIcing();keep();return;}e.preventDefault();icing.setPointerCapture(e.pointerId);temp.draw=true;temp.pts=[pos(e)];paintIcing()});
+  icing.addEventListener('pointerdown',e=>{if(state.decorateTool==='icing'&&$('icing-tool').value==='eraser'){const i=journey.strokes.findLastIndex(st=>st.tool==='pen');if(i>=0){journey.strokes.splice(i,1);paintIcing();keep();}else toast('No icing stroke to erase.');return;}e.preventDefault();icing.setPointerCapture(e.pointerId);temp.draw=true;temp.pts=[pos(e)];paintIcing()});
   icing.addEventListener('pointermove',e=>{if(!temp.draw)return;const p=pos(e),last=temp.pts.at(-1);if(Math.hypot(p.x-last.x,p.y-last.y)>(state.decorateTool==='toppings'?5:1.5)){temp.pts.push(p);paintIcing()}});
   function endStroke(){if(!temp.draw)return;temp.draw=false;journey.strokes.push({points:temp.pts,color:activeColor(),width:activeWidth(),tool:activeTool(),density:topping.density});temp.pts=[];paintIcing();keep()}
   icing.addEventListener('pointerup',endStroke);icing.addEventListener('pointercancel',endStroke);
-  $('icing-undo').addEventListener('click',()=>{journey.strokes.pop();paintIcing();keep()});
-  $('icing-clear').addEventListener('click',()=>{journey.strokes=[];paintIcing();keep()});
+  $('icing-undo').addEventListener('click',()=>{const i=journey.strokes.findLastIndex(st=>st.tool==='pen');if(i>=0){journey.strokes.splice(i,1);paintIcing();keep();}else toast('No icing stroke to undo.');});
+  $('icing-clear').addEventListener('click',()=>{const count=journey.strokes.length;journey.strokes=journey.strokes.filter(st=>st.tool!=='pen');if(journey.strokes.length===count){toast('No icing strokes to clear.');return;}paintIcing();keep();});
   document.querySelectorAll('[data-icing-swatch]').forEach(btn=>btn.addEventListener('click',()=>{$('icing-color').value=btn.dataset.icingSwatch;}));
 
   document.querySelectorAll('[data-cream-swatch]').forEach(btn=>btn.addEventListener('click',()=>{$('cream-color').value=btn.dataset.creamSwatch;}));
