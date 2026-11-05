@@ -290,6 +290,14 @@
     if(journey.baked&&journey.bakeLevel){x.save();x.globalCompositeOperation='source-atop';x.fillStyle=`rgba(166,93,31,${journey.bakeLevel/1600})`;x.fillRect(0,0,720,720);x.restore();}
     // Image-to-Pattern uses an image data URI. Composite it on an origin-clean
     // Canvas so Safari can export the final postcard, even if SVG fallback ran.
+    // Clip all raster overlays (image-to-pattern and decorating pens) to the cookie silhouette.
+    // Cookie coordinates are 320x320, inset 25 and scaled .97 in the 360x360 preview.
+    x.save();
+    x.scale(2,2);
+    x.translate(25,25);
+    x.scale(.97,.97);
+    x.clip(new Path2D(state.shape?pathForShape():shapeData[0].path));
+    x.setTransform(1,0,0,1,0,0);
     const pattern=window.CookiePostPattern?.get?.();
     if(pattern?.applied&&pattern.processedData){
       try{
@@ -311,6 +319,7 @@
     const imgIcing=new Image();imgIcing.src=icing.toDataURL('image/png');
     try{await imgIcing.decode();x.drawImage(imgIcing,0,0,720,720)}
     catch(err){console.warn('[Cookie Post] Icing image could not be decoded:',err)}
+    x.restore(); // release the silhouette clipping region
     return c;
   }
   function downloadCanvas(canvas,name){return new Promise(resolve=>canvas.toBlob(blob=>{if(!blob){toast('Export failed.');resolve(false);return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);resolve(true)},'image/png'))}
@@ -623,7 +632,15 @@
     const svg=$('stamp-canvas').cloneNode(true);svg.removeAttribute('id');svg.removeAttribute('tabindex');
     const plate=svg.querySelector('circle');if(plate)plate.remove();
     $('bake-cookie').innerHTML=svg.innerHTML;
-    const icingImage=svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')});$('bake-cookie').append(icingImage);
+    // Keep the same cookie silhouette for Bake as Decorate and exported cards.
+    const bakeDefs=$('bake-cookie').querySelector('defs')||$('bake-cookie').insertBefore(svgTag('defs'),$('bake-cookie').firstChild);
+    let bakeClip=bakeDefs.querySelector('#bake-cookie-silhouette');
+    if(!bakeClip){bakeClip=svgTag('clipPath',{id:'bake-cookie-silhouette',clipPathUnits:'userSpaceOnUse'});bakeDefs.append(bakeClip);}
+    bakeClip.replaceChildren(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,transform:'translate(25 25) scale(.97)'}));
+    const icingImage=svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')});
+    const clippedIcing=svgTag('g',{'clip-path':'url(#bake-cookie-silhouette)'});
+    clippedIcing.append(icingImage);
+    $('bake-cookie').append(clippedIcing);
     $('bake-level').value=journey.bakeLevel;$('bake-value').textContent=journey.bakeLevel+'%';
     $('bake-status').textContent=journey.baked?`Baked · Golden level ${journey.bakeLevel}%`:'Raw dough · No baking yet';
     $('bake-window').style.setProperty('--bake',journey.baked?journey.bakeLevel/100:0);
