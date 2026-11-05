@@ -27,8 +27,8 @@
     }
   }
   const track = (selector, type, predicate = () => true) => {
-    document.querySelector(selector)?.addEventListener(type, () => {
-      if (predicate()) rememberStampEdit();
+    document.querySelector(selector)?.addEventListener(type, event => {
+      if (predicate(event)) rememberStampEdit();
     }, true);
   };
   track('#stamp-grid', 'click', e => !!e.target.closest('[data-stamp]'));
