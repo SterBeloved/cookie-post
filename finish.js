@@ -629,18 +629,44 @@
   async function exportCard(){try{await downloadCanvas(await createCardCanvas(),'cookie-post-greeting-card.png')}catch(e){toast('Card export failed: '+e.message)}}
   function renderBake(){
     paintIcing();
-    const svg=$('stamp-canvas').cloneNode(true);svg.removeAttribute('id');svg.removeAttribute('tabindex');
-    const plate=svg.querySelector('circle');if(plate)plate.remove();
-    $('bake-cookie').innerHTML=svg.innerHTML;
-    // Keep the same cookie silhouette for Bake as Decorate and exported cards.
-    const bakeDefs=$('bake-cookie').querySelector('defs')||$('bake-cookie').insertBefore(svgTag('defs'),$('bake-cookie').firstChild);
-    let bakeClip=bakeDefs.querySelector('#bake-cookie-silhouette');
-    if(!bakeClip){bakeClip=svgTag('clipPath',{id:'bake-cookie-silhouette',clipPathUnits:'userSpaceOnUse'});bakeDefs.append(bakeClip);}
-    bakeClip.replaceChildren(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,transform:'translate(25 25) scale(.97)'}));
-    const icingImage=svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')});
-    const clippedIcing=svgTag('g',{'clip-path':'url(#bake-cookie-silhouette)'});
-    clippedIcing.append(icingImage);
-    $('bake-cookie').append(clippedIcing);
+    const svg=$('stamp-canvas').cloneNode(true);
+    svg.removeAttribute('id');svg.removeAttribute('tabindex');
+    // Chromium can resolve url(#...) from another SVG on the same page.
+    // Give the baked copy private paint, pattern and clipping identifiers.
+    const ids=new Map();
+    svg.querySelectorAll('[id]').forEach(node=>{
+      const oldId=node.id;
+      const newId='bake-preview-'+oldId;
+      ids.set(oldId,newId);
+      node.id=newId;
+    });
+    svg.querySelectorAll('*').forEach(node=>{
+      for(const attr of [...node.attributes]){
+        let value=attr.value;
+        for(const [oldId,newId] of ids){
+          value=value.split('url(#'+oldId+')').join('url(#'+newId+')');
+          if(value==='#'+oldId)value='#'+newId;
+        }
+        if(value!==attr.value)node.setAttribute(attr.name,value);
+      }
+    });
+    const bake=$('bake-cookie');
+    bake.replaceChildren(...[...svg.childNodes].map(node=>node.cloneNode(true)));
+    const bakeDefs=bake.querySelector('defs')||bake.insertBefore(svgTag('defs'),bake.firstChild);
+    const bakeClip=svgTag('clipPath',{id:'bake-only-cookie-silhouette',clipPathUnits:'userSpaceOnUse'});
+    bakeClip.append(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,transform:'translate(25 25) scale(.97)'}));
+    bakeDefs.append(bakeClip);
+    // Clip the complete cookie, including all shaded dough, stamp and pattern
+    // layers. Previously only the icing image was clipped.
+    const clippedCookie=svgTag('g',{'clip-path':'url(#bake-only-cookie-silhouette)'});
+    for(const child of [...bake.children])if(child!==bakeDefs)clippedCookie.append(child);
+    clippedCookie.append(svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')}));
+    bake.append(clippedCookie);
+    // Draw the mold border on top so Windows antialiasing cannot expose any
+    // decoration outside it.
+    bake.append(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,
+      transform:'translate(25 25) scale(.97)',fill:'none',
+      stroke:'#b88d61','stroke-width':'4','stroke-linejoin':'round'}));
     $('bake-level').value=journey.bakeLevel;$('bake-value').textContent=journey.bakeLevel+'%';
     $('bake-status').textContent=journey.baked?`Baked · Golden level ${journey.bakeLevel}%`:'Raw dough · No baking yet';
     $('bake-window').style.setProperty('--bake',journey.baked?journey.bakeLevel/100:0);
