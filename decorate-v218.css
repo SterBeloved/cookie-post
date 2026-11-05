@@ -1,0 +1,26 @@
+/* V2.18 UI-only additions. Existing drawing / saving scripts remain unchanged. */
+/* Hide the legacy second navigation button, even if existing button CSS sets display. */
+#stamp-workspace .decorate-switch .decorate-tab[data-tool="cream"]{display:none!important}
+/* The combined tab must stay highlighted for either of its two underlying tools. */
+#stamp-workspace:has(#cream-panel:not(.hidden)) #decorating-pens-tab{
+  background:#cde8db;box-shadow:0 0 0 4px #499b83,0 4px 0 #c4d7cc;
+}
+.decorating-pen-switch{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 19px}
+.decorating-pen-mode{border:2px solid #fff;outline:1px dashed #91baa9;outline-offset:-7px;
+  background:#eef8f3;color:#785549;border-radius:25px;padding:10px 22px;
+  font-family:inherit;font-size:16px;font-weight:700;box-shadow:0 3px 0 #d4dfd5}
+.decorating-pen-mode[aria-pressed="true"]{background:#f6d7df;outline-color:#dca5af;color:#754b51;box-shadow:0 0 0 2px #dc9fab,0 3px 0 #e6d6d5}
+/* Sugar pins / rainbow sprinkles should look like thin multicoloured sugar rods. */
+#toppings-panel .pins-preview{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  height:34px;min-width:126px;letter-spacing:normal;text-shadow:none}
+#toppings-panel .pins-preview i{display:block;width:8px;height:27px;border-radius:5px;
+  border:1px solid #ffffff99;box-shadow:0 1px 1px #7a6e6040}
+#toppings-panel .pins-preview i:nth-child(1){background:#eaa3b6;transform:rotate(-36deg) translateY(4px)}
+#toppings-panel .pins-preview i:nth-child(2){background:#bda5df;transform:rotate(38deg) translateY(-4px)}
+#toppings-panel .pins-preview i:nth-child(3){background:#9dccbd;transform:rotate(-25deg) translateY(3px)}
+#toppings-panel .pins-preview i:nth-child(4){background:#f3cf83;transform:rotate(42deg) translateY(-2px)}
+#toppings-panel .pins-preview i:nth-child(5){background:#abd7e8;transform:rotate(-18deg) translateY(4px)}
+/* Decorate stage remains transparent: no white dish or dotted plate behind cookie. */
+#stamp-workspace .cookie-drawing-stage{background:none!important}
+#stamp-workspace #stamp-canvas{background:none!important}
+@media(max-width:550px){.decorating-pen-mode{font-size:14px;padding:9px 16px}}
