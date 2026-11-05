@@ -5,11 +5,70 @@
   const clear = document.getElementById('stamp-clear');
   if (!clear) return;
 
+
+  // A separate history for Traditional Stamps. Icing, Cream, Toppings
+  // and Image to Pattern are never changed by stamp undo.
+  const stampHistory = [];
+  const stampSnapshot = () => JSON.stringify({
+    selected: stampState.selected,
+    depth: stampState.depth,
+    rotation: stampState.rotation,
+    x: stampState.x,
+    y: stampState.y,
+    size: stampState.size,
+    applied: stampState.applied,
+    stamped: state.stamped ? { ...state.stamped } : null
+  });
+  function rememberStampEdit() {
+    const value = stampSnapshot();
+    if (stampHistory[stampHistory.length - 1] !== value) {
+      stampHistory.push(value);
+      if (stampHistory.length > 60) stampHistory.shift();
+    }
+  }
+  const track = (selector, type, predicate = () => true) => {
+    document.querySelector(selector)?.addEventListener(type, () => {
+      if (predicate()) rememberStampEdit();
+    }, true);
+  };
+  track('#stamp-grid', 'click', e => !!e.target.closest('[data-stamp]'));
+  track('#stamp-depth', 'input');
+  track('#stamp-rotation', 'input');
+  track('#stamp-scale', 'input');
+  track('#stamp-center', 'click');
+  track('#stamp-apply', 'click', () => !!stampState.selected);
+  track('#stamp-canvas', 'click', () => state.page === 'decorate' && state.decorateTool === 'stamps');
+
+  const undo = document.getElementById('stamp-undo');
+  undo?.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopImmediatePropagation(); // block the old "restore last saved stamp" listener
+    if (!stampHistory.length) {
+      toast('No stamp edit to undo.');
+      return;
+    }
+    const previous = JSON.parse(stampHistory.pop());
+    state.stamped = previous.stamped;
+    Object.assign(stampState, {
+      selected: previous.selected,
+      depth: previous.depth,
+      rotation: previous.rotation,
+      x: previous.x,
+      y: previous.y,
+      size: previous.size,
+      applied: previous.applied
+    });
+    save();
+    renderStamp();
+    toast('Last stamp edit undone.');
+  }, true);
+
   // The older click handler resets selection to "fu" (the first stamp).
   // Capture the click before it reaches that handler and clear the state instead.
   clear.addEventListener('click', (event) => {
     event.stopImmediatePropagation();
     event.preventDefault();
+    rememberStampEdit();
     state.stamped = null;
     stampState.selected = null;
     stampState.applied = false;
