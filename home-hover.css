@@ -1,0 +1,42 @@
+/* V2.17: independent, original-canvas homepage hover artwork. */
+.updated-home .home-hover-outline{
+  display:block; position:absolute; inset:0; width:100%; height:100%;
+  object-fit:fill; pointer-events:none; user-select:none;
+  opacity:0; visibility:hidden; z-index:2;
+}
+.updated-home .home-hover-caption{
+  position:absolute; pointer-events:none; user-select:none;
+  white-space:nowrap; text-align:center; z-index:4;
+  font-family:'Baskerville','Palatino Linotype','Book Antiqua',Palatino,'Times New Roman',serif;
+  font-size:clamp(15px,2.45vw,43px); font-weight:800; font-style:italic;
+  line-height:1.08; letter-spacing:.025em;
+  color:#dc839a; text-shadow:0 1px 0 #fff9ed,1px 2px 0 rgba(255,251,245,.8),0 2px 8px rgba(90,44,46,.24);
+  opacity:0; visibility:hidden;
+}
+.updated-home .home-hover-outline.is-visible,
+.updated-home .home-hover-caption.is-visible{opacity:1;visibility:visible;}
+/* Disable pre-existing scale / dim / click transitions, which the user did not request. */
+.updated-home .menu-hotspot,
+.updated-home .menu-hotspot:hover,
+.updated-home .menu-hotspot:active,
+.updated-home .menu-hotspot:focus-visible{
+  filter:none!important; transition:none!important; box-shadow:none!important;
+  outline:0!important; background:transparent!important;
+}
+.updated-home .menu-hotspot:hover,
+.updated-home .menu-hotspot:active{transform:none!important;}
+.updated-home .menu-hotspot.hotspot-journal,
+.updated-home .menu-hotspot.hotspot-journal:hover,
+.updated-home .menu-hotspot.hotspot-journal:active{transform:rotate(-8deg)!important;}
+/* Canvas is 1670x942: percentages correspond to full artwork, not hotspot boxes. */
+.updated-home .home-hover-caption--free-creation{left:22.5%;top:84%;transform:translateX(-50%) rotate(-5deg);}
+.updated-home .home-hover-caption--my-collection{left:64%;top:78%;transform:translateX(-50%) rotate(-8deg);}
+.updated-home .home-hover-caption--cookie-gacha{left:88%;top:49%;transform:translateX(-50%) rotate(5deg);}
+.updated-home .home-hover-caption--cookie-copycat{left:86%;top:90%;transform:translateX(-50%) rotate(-5deg);}
+/* Ensure original buttons remain clickable and overlays do not intercept navigation. */
+.updated-home .menu-hotspot{z-index:3;}
+@media(max-width:600px){
+  .updated-home .home-hover-caption{font-size:clamp(9px,2.7vw,17px);}
+  .updated-home .home-hover-caption--free-creation{top:81%;}
+  .updated-home .home-hover-caption--my-collection{top:79%;}
+}
