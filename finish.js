@@ -627,49 +627,30 @@
   }
   window.CookiePostCreateCardCanvas=createCardCanvas;
   async function exportCard(){try{await downloadCanvas(await createCardCanvas(),'cookie-post-greeting-card.png')}catch(e){toast('Card export failed: '+e.message)}}
+  // Use the SAME rasterized cookie as Package/export to avoid platform-specific
+  // SVG clipPath resolution differences in the standalone oven preview.
+  let bakeRenderTicket=0;
   function renderBake(){
-    paintIcing();
-    const svg=$('stamp-canvas').cloneNode(true);
-    svg.removeAttribute('id');svg.removeAttribute('tabindex');
-    // Chromium can resolve url(#...) from another SVG on the same page.
-    // Give the baked copy private paint, pattern and clipping identifiers.
-    const ids=new Map();
-    svg.querySelectorAll('[id]').forEach(node=>{
-      const oldId=node.id;
-      const newId='bake-preview-'+oldId;
-      ids.set(oldId,newId);
-      node.id=newId;
-    });
-    svg.querySelectorAll('*').forEach(node=>{
-      for(const attr of [...node.attributes]){
-        let value=attr.value;
-        for(const [oldId,newId] of ids){
-          value=value.split('url(#'+oldId+')').join('url(#'+newId+')');
-          if(value==='#'+oldId)value='#'+newId;
-        }
-        if(value!==attr.value)node.setAttribute(attr.name,value);
-      }
-    });
+    const ticket=++bakeRenderTicket;
     const bake=$('bake-cookie');
-    bake.replaceChildren(...[...svg.childNodes].map(node=>node.cloneNode(true)));
-    const bakeDefs=bake.querySelector('defs')||bake.insertBefore(svgTag('defs'),bake.firstChild);
-    const bakeClip=svgTag('clipPath',{id:'bake-only-cookie-silhouette',clipPathUnits:'userSpaceOnUse'});
-    bakeClip.append(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,transform:'translate(25 25) scale(.97)'}));
-    bakeDefs.append(bakeClip);
-    // Clip the complete cookie, including all shaded dough, stamp and pattern
-    // layers. Previously only the icing image was clipped.
-    const clippedCookie=svgTag('g',{'clip-path':'url(#bake-only-cookie-silhouette)'});
-    for(const child of [...bake.children])if(child!==bakeDefs)clippedCookie.append(child);
-    clippedCookie.append(svgTag('image',{x:0,y:0,width:360,height:360,href:icing.toDataURL('image/png')}));
-    bake.append(clippedCookie);
-    // Draw the mold border on top so Windows antialiasing cannot expose any
-    // decoration outside it.
-    bake.append(svgTag('path',{d:state.shape?pathForShape():shapeData[0].path,
-      transform:'translate(25 25) scale(.97)',fill:'none',
-      stroke:'#b88d61','stroke-width':'4','stroke-linejoin':'round'}));
-    $('bake-level').value=journey.bakeLevel;$('bake-value').textContent=journey.bakeLevel+'%';
+    bake.replaceChildren();
+    $('bake-level').value=journey.bakeLevel;
+    $('bake-value').textContent=journey.bakeLevel+'%';
     $('bake-status').textContent=journey.baked?`Baked · Golden level ${journey.bakeLevel}%`:'Raw dough · No baking yet';
     $('bake-window').style.setProperty('--bake',journey.baked?journey.bakeLevel/100:0);
+    rasterCookie().then(canvas=>{
+      if(ticket!==bakeRenderTicket || state.page!=='bake')return;
+      // The raster is already clipped to the actual selected cookie silhouette,
+      // including the stamp, Image to Pattern, icing, cream and toppings.
+      bake.replaceChildren(svgTag('image',{
+        href:canvas.toDataURL('image/png'),x:0,y:0,width:360,height:360,
+        preserveAspectRatio:'xMidYMid meet'
+      }));
+    }).catch(error=>{
+      if(ticket!==bakeRenderTicket)return;
+      console.error('[Cookie Post] Oven preview rendering failed:',error);
+      $('bake-status').textContent='Cookie preview unavailable. Please go back and try again.';
+    });
   }
   $('bake-level').addEventListener('input',e=>{$('bake-value').textContent=e.target.value+'%';$('bake-window').style.setProperty('--bake',Number(e.target.value)/100);});
   $('bake-apply').addEventListener('click',()=>{journey.bakeLevel=Math.max(1,Number($('bake-level').value));journey.baked=true;keep();renderBake();toast('Cookie baked!');});
