@@ -67,10 +67,16 @@
         <filter id="${blur}"><feGaussianBlur stdDeviation="4.4"/></filter>
       </defs>
       ${withShadow?`<ellipse cx="162" cy="244" rx="74" ry="15" fill="#6f5240" opacity="0.17" filter="url(#${blur})"/>`:''}
-      <path d="${path}" transform="translate(0 12)" fill="${side3}" opacity="0.88"/>
-      <path d="${path}" transform="translate(0 8)" fill="${side2}" opacity="0.94"/>
-      <path d="${path}" transform="translate(0 4)" fill="${side1}" opacity="0.98"/>
+      <!-- Keep shaded dough layers inside the selected mold silhouette.
+           Unclipped translated side layers previously protruded beyond the outline,
+           particularly noticeable on Windows/Chromium for narrow shapes. -->
       <path d="${path}" fill="${topBase}"/>
+      <g clip-path="url(#${clip})">
+        <path d="${path}" transform="translate(0 12)" fill="${side3}" opacity="0.88"/>
+        <path d="${path}" transform="translate(0 8)" fill="${side2}" opacity="0.94"/>
+        <path d="${path}" transform="translate(0 4)" fill="${side1}" opacity="0.98"/>
+      </g>
+      <path d="${path}" fill="${topBase}" opacity="0.88"/>
       <g clip-path="url(#${clip})">
         <rect x="30" y="32" width="260" height="260" fill="url(#${grain})" opacity="0.55"/>
       </g>
