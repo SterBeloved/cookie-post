@@ -1,0 +1,25 @@
+/* V2.20 -- seven Chinese floral wallpapers and true landscape card layout. */
+.package-orientation-stage{
+ width:min(100%,400px);aspect-ratio:5/7;position:relative;margin:0 auto 12px;
+}
+.package-orientation-stage #package-paper{
+ position:absolute;top:50%;left:50%;width:100%;margin:0;
+ transform:translate(-50%,-50%);transform-origin:center center;
+}
+.package-orientation-stage.is-landscape{width:min(100%,520px);aspect-ratio:7/5}
+.package-orientation-stage.is-landscape #package-paper{display:none}
+.package-landscape-preview{display:none}
+.package-orientation-stage.is-landscape .package-landscape-preview{
+ display:block;width:100%;height:100%;object-fit:contain;
+ border:8px solid white;border-radius:20px;
+ box-shadow:0 6px 15px #6a847a44;background:#fff9f2;
+}
+.package-preview #package-flavor{display:block;width:100%;text-align:center;margin:10px auto 0}
+.icing-palette .legacy-icing-tool,.legacy-icing-tool{display:none!important}
+.package-paper[data-paper="cn-mist-lilac"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-mist-lilac.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-sky-blue"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-sky-blue.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-cream-gold"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-cream-gold.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-blush-pink"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-blush-pink.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-soft-green"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-soft-green.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-celadon-mist"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-celadon-mist.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
+.package-paper[data-paper="cn-warm-taupe"]:not(.has-custom-background){background-image:url("assets/wrapping/cn-warm-taupe.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;}
