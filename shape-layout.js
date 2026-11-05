@@ -76,7 +76,7 @@
         <path d="${path}" transform="translate(0 8)" fill="${side2}" opacity="0.94"/>
         <path d="${path}" transform="translate(0 4)" fill="${side1}" opacity="0.98"/>
       </g>
-      <path d="${path}" fill="${topBase}" opacity="0.88"/>
+      <path d="${path}" fill="${topBase}"/>
       <g clip-path="url(#${clip})">
         <rect x="30" y="32" width="260" height="260" fill="url(#${grain})" opacity="0.55"/>
       </g>
